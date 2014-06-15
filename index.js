@@ -1,5 +1,7 @@
 'use strict';
 
+var retextRange = require('retext-range');
+
 exports = module.exports = function () {};
 
 /**
@@ -165,6 +167,9 @@ function attach(retext) {
     var TextOM = retext.parser.TextOM,
         elementPrototype = TextOM.Element.prototype,
         parentPrototype = TextOM.Parent.prototype;
+
+    /* Use retext-range */
+    retext.use(retextRange);
 
     /**
      * `prependContent` inserts the parsed `source` at the start of the
