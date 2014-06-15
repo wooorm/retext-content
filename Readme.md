@@ -1,4 +1,4 @@
-# retext-content [![Build Status](https://travis-ci.org/wooorm/retext-content.svg?branch=mcontenter)](https://travis-ci.org/wooorm/retext-content) [![Coverage Status](https://img.shields.io/coveralls/wooorm/retext-content.svg)](https://coveralls.io/r/wooorm/retext-content?branch=master)
+# retext-content [![Build Status](https://travis-ci.org/wooorm/retext-content.svg?branch=master)](https://travis-ci.org/wooorm/retext-content) [![Coverage Status](https://img.shields.io/coveralls/wooorm/retext-content.svg)](https://coveralls.io/r/wooorm/retext-content?branch=master)
 
 [![browser support](https://ci.testling.com/wooorm/retext-content.png) ](https://ci.testling.com/wooorm/retext-content)
 
