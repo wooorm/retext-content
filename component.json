@@ -8,7 +8,7 @@
     "content"
   ],
   "dependencies": {
-    "wooorm/retext-range": "~0.0.2"
+    "wooorm/retext-range": "~0.0.3"
   },
   "scripts" : [
     "index.js"
