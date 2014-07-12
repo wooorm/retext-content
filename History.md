@@ -1,4 +1,12 @@
 
+n.n.n / 2014-07-12
+==================
+
+ * Added changelog
+ * Fixed newer Retext changes, changed API to be more forgiving
+ * Update retext-range, eslint, istanbul, retext, retext-ast
+ * Removed functionality to browserify unit tests by default
+
 0.0.4 / 2014-06-19
 ==================
 
