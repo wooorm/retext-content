@@ -91,9 +91,30 @@ describe('Retext.parser.TextOM.Parent#prependContent(value)', function () {
         }, /Type Error/);
 
         assert.throws(function () {
-            root.prependContent.call(new TextOM.WordNode('test'));
+            root.prependContent.call(new TextOM.TextNode('test'));
         }, /Type Error/);
     });
+
+    it('should throw, when opperating on Word-, WhiteSpace-, or' +
+        'PunctuationNode', function () {
+            var root = retext.parse('A document.'),
+                wordNode = root.head.head.head,
+                punctuationNode = root.head.head.tail,
+                whiteSpaceNode = root.head.head[1];
+
+            assert.throws(function () {
+                wordNode.prependContent();
+            }, 'context object');
+
+            assert.throws(function () {
+                whiteSpaceNode.prependContent();
+            }, 'context object');
+
+            assert.throws(function () {
+                punctuationNode.prependContent();
+            }, 'context object');
+        }
+    );
 
     it('should return a newly initialized `Range` object', function () {
         var root = retext.parse('A document.');
@@ -193,34 +214,6 @@ describe('Retext.parser.TextOM.Parent#prependContent(value)', function () {
             );
         }
     );
-
-    it('should throw, when one or more `ParagraphNode`s are prepended into ' +
-        'a `ParagraphNode`', function () {
-            var paragraph = retext.parse(
-                'A document including a paragraph.'
-            ).head;
-
-            assert.throws(function () {
-                paragraph.prependContent(
-                    'A second paragraph.\n\nA third paragraph.\n\n'
-                );
-            }, /multiple parents/);
-        }
-    );
-
-    it('should throw, when one or more `SentenceNode`s are prepended into ' +
-        'a `SentenceNode`', function () {
-            var sentence = retext.parse(
-                'A document including a sentence.'
-            ).head.head;
-
-            assert.throws(function () {
-                sentence.prependContent(
-                    'A second sentence. A third sentence. '
-                );
-            }, /multiple parents/);
-        }
-    );
 });
 
 describe('Retext.parser.TextOM.Parent#appendContent(value)', function () {
@@ -248,9 +241,30 @@ describe('Retext.parser.TextOM.Parent#appendContent(value)', function () {
         }, /Type Error/);
 
         assert.throws(function () {
-            root.appendContent.call(new TextOM.WordNode('test'));
+            root.appendContent.call(new TextOM.TextNode('test'));
         }, /Type Error/);
     });
+
+    it('should throw, when opperating on Word-, WhiteSpace-, or' +
+        'PunctuationNode', function () {
+            var root = retext.parse('A document.'),
+                wordNode = root.head.head.head,
+                punctuationNode = root.head.head.tail,
+                whiteSpaceNode = root.head.head[1];
+
+            assert.throws(function () {
+                wordNode.appendContent();
+            }, 'context object');
+
+            assert.throws(function () {
+                whiteSpaceNode.appendContent();
+            }, 'context object');
+
+            assert.throws(function () {
+                punctuationNode.appendContent();
+            }, 'context object');
+        }
+    );
 
     it('should return a newly initialized `Range` object', function () {
         var root = retext.parse('A document.');
@@ -346,34 +360,6 @@ describe('Retext.parser.TextOM.Parent#appendContent(value)', function () {
             );
         }
     );
-
-    it('should throw, when one or more `ParagraphNode`s are appended ' +
-        'into a `ParagraphNode`', function () {
-            var paragraph = retext.parse(
-                'A document including a paragraph.'
-            ).head;
-
-            assert.throws(function () {
-                paragraph.appendContent(
-                    'A second paragraph.\n\nA third paragraph.\n\n'
-                );
-            }, /multiple parents/);
-        }
-    );
-
-    it('should throw, when one or more `SentenceNode`s are appended into ' +
-        'a `SentenceNode`', function () {
-            var sentence = retext.parse(
-                'A document including a sentence.'
-            ).head.head;
-
-            assert.throws(function () {
-                sentence.appendContent(
-                    'A second sentence. A third sentence. '
-                );
-            }, /multiple parents/);
-        }
-    );
 });
 
 describe('Retext.parser.TextOM.Parent#replaceContent(value?)', function () {
@@ -399,9 +385,30 @@ describe('Retext.parser.TextOM.Parent#replaceContent(value?)', function () {
         }, /Type Error/);
 
         assert.throws(function () {
-            root.replaceContent.call(new TextOM.WordNode('test'));
+            root.replaceContent.call(new TextOM.TextNode('test'));
         }, /Type Error/);
     });
+
+    it('should throw, when opperating on Word-, WhiteSpace-, or' +
+        'PunctuationNode', function () {
+            var root = retext.parse('A document.'),
+                wordNode = root.head.head.head,
+                punctuationNode = root.head.head.tail,
+                whiteSpaceNode = root.head.head[1];
+
+            assert.throws(function () {
+                wordNode.replaceContent();
+            }, 'context object');
+
+            assert.throws(function () {
+                whiteSpaceNode.replaceContent();
+            }, 'context object');
+
+            assert.throws(function () {
+                punctuationNode.replaceContent();
+            }, 'context object');
+        }
+    );
 
     it('should return a newly initialized `Range` object', function () {
         var root = retext.parse('A document.');
@@ -490,34 +497,6 @@ describe('Retext.parser.TextOM.Parent#replaceContent(value?)', function () {
             assert(root.toString() === '\n\nAnother paragraph.\n\n');
         }
     );
-
-    it('should throw, when one or more `ParagraphNode`s are inserted into ' +
-        'a `ParagraphNode`', function () {
-            var paragraph = retext.parse(
-                'A document including a paragraph.'
-            ).head;
-
-            assert.throws(function () {
-                paragraph.replaceContent(
-                    'A second paragraph.\n\nA third paragraph.\n\n'
-                );
-            }, /multiple parents/);
-        }
-    );
-
-    it('should throw, when one or more `SentenceNode`s are inserted into ' +
-        'a `SentenceNode`', function () {
-            var sentence = retext.parse(
-                'A document including a sentence.'
-            ).head.head;
-
-            assert.throws(function () {
-                sentence.replaceContent(
-                    'A second sentence. A third sentence. '
-                );
-            }, /multiple parents/);
-        }
-    );
 });
 
 describe('Retext.parser.TextOM.Parent#removeContent()', function () {
@@ -533,7 +512,7 @@ describe('Retext.parser.TextOM.Parent#removeContent()', function () {
         }, /Type Error/);
 
         assert.throws(function () {
-            root.removeContent.call(new TextOM.WordNode('test'));
+            root.removeContent.call(new TextOM.TextNode('test'));
         }, /Type Error/);
     });
 
@@ -566,7 +545,7 @@ describe('Retext.parser.TextOM.Parent#removeContent()', function () {
         }
     );
 
-    it('should insert one or more of `WordNode`, `PunctuationNode`, and ' +
+    it('should remove one or more of `WordNode`, `PunctuationNode`, and ' +
         '`WhiteSpaceNode`, when operating on a `SentenceNode`', function () {
             var sentence = retext.parse(
                 'A document. Containing two paragraphs.\n\n' +

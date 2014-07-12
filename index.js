@@ -4,6 +4,34 @@ var retextRange = require('retext-range');
 
 exports = module.exports = function () {};
 
+function fromAST(TextOM, ast) {
+    var iterator = -1,
+        children, node;
+
+    node = new TextOM[ast.type]();
+
+    if ('children' in ast) {
+        iterator = -1;
+        children = ast.children;
+
+        while (children[++iterator]) {
+            node.append(fromAST(TextOM, children[iterator]));
+        }
+    } else {
+        node.fromString(ast.value);
+    }
+
+    return node;
+}
+
+function getTokenizer(parser, node) {
+    var type = node.type.substr(0, node.type.indexOf('Node'));
+
+    if ('tokenize' + type in parser) {
+        return parser['tokenize' + type];
+    }
+}
+
 /**
  * `insert` inserts the given source after (when given), the `item`, and
  * otherwise as the first item of the given parent. Tries to be smart
@@ -19,7 +47,7 @@ exports = module.exports = function () {};
  * @api private
  */
 function insert(parent, item, source) {
-    var hierarchy, child, range, children, iterator;
+    var parser, range, tokenizer, tree, iterator;
 
     if (!parent || !parent.TextOM ||
         !(parent instanceof parent.TextOM.Parent ||
@@ -27,43 +55,31 @@ function insert(parent, item, source) {
             throw new TypeError('Type Error');
     }
 
-    hierarchy = parent.hierarchy + 1;
-    child = parent.parser(source);
+    parser = parent.TextOM.parser;
+    tokenizer = getTokenizer(parser, parent);
 
-    if (!child.length) {
+    if (!tokenizer) {
+        throw new TypeError('Illegal invocation: \'' + source +
+            '\' is not a valid context object for \'insert\'');
+    }
+
+    tree = fromAST(parent.TextOM, tokenizer.call(parser, source));
+
+    range = new parent.TextOM.Range();
+
+    if (!tree.head) {
         throw new TypeError('Illegal invocation: \'' + source +
             '\' is not a valid argument for \'insert\'');
     }
 
-    while (child.hierarchy < hierarchy) {
-        /* WhiteSpace, and the like, or multiple children. */
-        if (child.length > 1) {
-            if (!('hierarchy' in child.head) ||
-                child.head.hierarchy === hierarchy) {
-                    children = [].slice.call(child);
-                    break;
-            } else {
-                throw new TypeError('Illegal invocation: Can\'t ' +
-                    'insert from multiple parents');
-            }
-        } else {
-            child = child.head;
-        }
-    }
+    range.setStart(tree.head);
+    range.setEnd(tree.tail || tree.head);
 
-    if (!children) {
-        children = [child];
-    }
+    iterator = tree.length;
 
-    range = new parent.TextOM.Range();
-    range.setStart(children[0]);
-    range.setEnd(children[children.length - 1]);
-
-    iterator = children.length;
-
-    while (children[--iterator]) {
+    while (tree[--iterator]) {
         (item ? item.after : parent.prepend).call(
-            item || parent, children[iterator]
+            item || parent, tree[iterator]
         );
     }
 
@@ -154,8 +170,12 @@ function replaceContent(source) {
 
     items = [].slice.call(self);
 
-    if (self.parser(source).length) {
+    try {
         result = insert(self, null, source);
+    } catch (error) {
+        if (error.toString().indexOf('context object') !== -1) {
+            throw error;
+        }
     }
 
     remove(items);
@@ -164,7 +184,7 @@ function replaceContent(source) {
 }
 
 function attach(retext) {
-    var TextOM = retext.parser.TextOM,
+    var TextOM = retext.TextOM,
         elementPrototype = TextOM.Element.prototype,
         parentPrototype = TextOM.Parent.prototype;
 
