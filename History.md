@@ -1,5 +1,5 @@
 
-n.n.n / 2014-07-13
+0.1.1 / 2014-07-13
 ==================
 
  * 827a72f by accident removed retext-ast, this reintroduces the dependency
