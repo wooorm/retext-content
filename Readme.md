@@ -45,6 +45,14 @@ root.toString(); // "One paragraph.\n\nTwo paragraphs."
 // Remove:
 rootNode.tail.removeContent();
 root.toString(); // "One paragraph.\n\n"
+
+// Remove outer content:
+rootNode.head.removeOuterContent();
+root.toString(); // "\n\n"
+
+// Replace outer content:
+rootNode.head.replaceOuterContent("One paragraph.\n\nTwo paragraphs.");
+root.toString(); // "One paragraph.\n\nTwo paragraphs."
 ```
 
 ## API
@@ -113,6 +121,35 @@ Removes the current content of the parent, and replaces it with the parsed value
 
 - `value` (`String`): The to-parse and insert inside content.
 
+#### TextOM.Parent#removeOuterContent()
+
+```js
+var Retext = require('retext'),
+    content = require('content'),
+    rootNode = new Retext().use(content).parse('A sentence. Another sentence.');
+
+// Remove the node:
+rootNode.head.head.removeOuterContent();
+rootNode.toString(); // ' Another sentence.'
+```
+
+Removes the current element.
+
+#### TextOM.Parent#replaceOuterContent(value?)
+
+```js
+var Retext = require('retext'),
+    content = require('content'),
+    rootNode = new Retext().use(content).parse('A sentence.');
+
+// Replace the content of the first paragraph:
+rootNode.head.replaceOuterContent('One sentence.\n\nTwo sentences.');
+rootNode.toString(); // 'One sentence.\n\nTwo sentences.'
+```
+
+Replaced the current element, and replaces it with the parsed nodes.
+
+- `value` (`String`): The to-parse and replace-with content.
 
 ## Browser Support
 Pretty much every browser (available through browserstack) runs all retext-content unit tests.
