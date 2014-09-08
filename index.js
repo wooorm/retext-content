@@ -195,6 +195,65 @@ function replaceContent(source) {
     return result;
 }
 
+/**
+ * Removes the operated on element (both parent and child).
+ *
+ * @this Element
+ * @private
+ */
+function removeOuterContent() {
+    var self = this;
+
+    if (!self || !self.TextOM || !(self instanceof self.TextOM.Element)) {
+        throw new TypeError(
+            'Type Error: the context object is not a valid element' +
+            ' for \'removeOuterContent\''
+        );
+    }
+
+    self.remove();
+}
+
+/**
+ * Replaced the operated on element (both parent and child) with the given
+ * `source`.
+ *
+ * @param {string} source - The source to parse and insert.
+ * @return {Range} - A range object with its startContainer set to the
+ *   first inserted node, and endContainer to the last inserted node.
+ * @this Element
+ * @private
+ */
+function replaceOuterContent(source) {
+    var self = this,
+        result;
+
+    if (
+        !self || !self.TextOM || !self.parent ||
+        !(self instanceof self.TextOM.Element)
+    ) {
+        throw new TypeError(
+            'Type Error: the context object is not a valid element' +
+            ' for \'replaceOuterContent\''
+        );
+    }
+
+    /* Do not throw on empty given values. */
+    try {
+        result = insert(self.parent, self, source);
+    } catch (error) {
+        if (error.toString().indexOf('valid source') === -1) {
+            throw error;
+        }
+
+        result = new self.TextOM.Range();
+    }
+
+    self.remove();
+
+    return result;
+}
+
 function attach(retext) {
     var TextOM = retext.TextOM,
         elementPrototype = TextOM.Element.prototype,
@@ -234,6 +293,22 @@ function attach(retext) {
      */
     elementPrototype.replaceContent = parentPrototype.replaceContent =
         replaceContent;
+
+    /**
+     * Expose `removeOuterContent` on (Parent and) Element.
+     * @public
+     * @memberof TextOM.Element.prototype
+     */
+    elementPrototype.removeOuterContent =
+        parentPrototype.removeOuterContent = removeOuterContent;
+
+    /**
+     * Expose `replaceOuterContent` on (Parent and) Element.
+     * @public
+     * @memberof TextOM.Element.prototype
+     */
+    elementPrototype.replaceOuterContent =
+        parentPrototype.replaceOuterContent = replaceOuterContent;
 }
 
 /**
