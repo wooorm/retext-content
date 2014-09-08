@@ -179,12 +179,15 @@ function replaceContent(source) {
 
     items = slice.call(self);
 
+    /* Do not throw on empty given values. */
     try {
         result = insert(self, null, source);
     } catch (error) {
-        if (error.toString().indexOf('context object') !== -1) {
+        if (error.toString().indexOf('valid source') === -1) {
             throw error;
         }
+
+        result = new self.TextOM.Range();
     }
 
     remove(items);
