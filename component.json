@@ -2,7 +2,7 @@
   "name": "retext-content",
   "repository": "wooorm/retext-content",
   "description": "Append, prepend, remove, and replace content into/from Retext nodes",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "keywords": [
     "retext",
     "content"
