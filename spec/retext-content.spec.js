@@ -95,26 +95,16 @@ describe('Retext.parser.TextOM.Parent#prependContent(value)', function () {
         }, /Type Error/);
     });
 
-    it('should throw, when opperating on Word-, WhiteSpace-, or' +
-        'PunctuationNode', function () {
-            var root = retext.parse('A document.'),
-                wordNode = root.head.head.head,
-                punctuationNode = root.head.head.tail,
-                whiteSpaceNode = root.head.head[1];
+    it('should throw, when opperating on an unknown node', function () {
+        var root = retext.parse('document'),
+            node = root.head.head.head;
 
-            assert.throws(function () {
-                wordNode.prependContent();
-            }, 'context object');
+        node.type = 'SomeUnknownNode';
 
-            assert.throws(function () {
-                whiteSpaceNode.prependContent();
-            }, 'context object');
-
-            assert.throws(function () {
-                punctuationNode.prependContent();
-            }, 'context object');
-        }
-    );
+        assert.throws(function () {
+            node.prependContent();
+        }, 'context object');
+    });
 
     it('should return a newly initialized `Range` object', function () {
         var root = retext.parse('A document.');
@@ -245,26 +235,16 @@ describe('Retext.parser.TextOM.Parent#appendContent(value)', function () {
         }, /Type Error/);
     });
 
-    it('should throw, when opperating on Word-, WhiteSpace-, or' +
-        'PunctuationNode', function () {
-            var root = retext.parse('A document.'),
-                wordNode = root.head.head.head,
-                punctuationNode = root.head.head.tail,
-                whiteSpaceNode = root.head.head[1];
+    it('should throw, when opperating on an unknown node', function () {
+        var root = retext.parse('document'),
+            node = root.head.head.head;
 
-            assert.throws(function () {
-                wordNode.appendContent();
-            }, 'context object');
+        node.type = 'SomeUnknownNode';
 
-            assert.throws(function () {
-                whiteSpaceNode.appendContent();
-            }, 'context object');
-
-            assert.throws(function () {
-                punctuationNode.appendContent();
-            }, 'context object');
-        }
-    );
+        assert.throws(function () {
+            node.appendContent();
+        }, 'context object');
+    });
 
     it('should return a newly initialized `Range` object', function () {
         var root = retext.parse('A document.');
@@ -389,26 +369,16 @@ describe('Retext.parser.TextOM.Parent#replaceContent(value?)', function () {
         }, /Type Error/);
     });
 
-    it('should throw, when opperating on Word-, WhiteSpace-, or' +
-        'PunctuationNode', function () {
-            var root = retext.parse('A document.'),
-                wordNode = root.head.head.head,
-                punctuationNode = root.head.head.tail,
-                whiteSpaceNode = root.head.head[1];
+    it('should throw, when opperating on an unknown node', function () {
+        var root = retext.parse('document'),
+            node = root.head.head.head;
 
-            assert.throws(function () {
-                wordNode.replaceContent();
-            }, 'context object');
+        node.type = 'SomeUnknownNode';
 
-            assert.throws(function () {
-                whiteSpaceNode.replaceContent();
-            }, 'context object');
-
-            assert.throws(function () {
-                punctuationNode.replaceContent();
-            }, 'context object');
-        }
-    );
+        assert.throws(function () {
+            node.replaceContent();
+        }, 'context object');
+    });
 
     it('should return a newly initialized `Range` object', function () {
         var root = retext.parse('A document.');
