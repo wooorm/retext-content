@@ -1,0 +1,31 @@
+{
+  "name": "retext-content",
+  "description": "Append, prepend, remove, and replace content into/from Retext nodes",
+  "authors": [
+    "Titus Wormer <tituswormer@gmail.com>"
+  ],
+  "keywords": [
+    "retext",
+    "content"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wooorm/retext-content.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "retext-range": "^0.1.0"
+  },
+  "main": "index.js",
+  "ignore": [
+    ".*",
+    "*.log",
+    "*.md",
+    "component.json",
+    "package.json",
+    "coverage",
+    "node_modules",
+    "benchmark",
+    "spec"
+  ]
+}
