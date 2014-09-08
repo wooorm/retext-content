@@ -35,18 +35,17 @@ function getTokenizer(parser, node) {
 }
 
 /**
- * `insert` inserts the given source after (when given), the `item`, and
+ * Inserts the given source after (when given), the `item`, and
  * otherwise as the first item of the given parent. Tries to be smart
  * about which nodes to add (i.e., nodes of the same or without
  * hierarchy).
  *
- * @param {Object} parent - The node to insert into.
- * @param {Object?} item - The node to insert after.
- * @param {String} source - The source to parse and insert.
+ * @param {Parent} parent - The node to insert into.
+ * @param {?Item} item - The node to insert after.
+ * @param {string} source - The source to parse and insert.
  * @return {Range} - A range object with its startContainer set to the
- *                   first inserted node, and endContainer set to to
- *                   the last inserted node.
- * @api private
+ *   first inserted node, and endContainer to the last inserted node.
+ * @private
  */
 function insert(parent, item, source) {
     var parser, range, tokenizer, tree, iterator;
@@ -96,10 +95,10 @@ function insert(parent, item, source) {
 }
 
 /**
- * `remove` calls `remove` on each item in `items`.
+ * Removes each item in `items`.
  *
- * @param {Node|Node[]} items - The nodes to remove.
- * @api private
+ * @param {Parent|Array.<Child>} items - The nodes to remove.
+ * @private
  */
 function remove(items) {
     var iterator;
@@ -121,14 +120,12 @@ function remove(items) {
 }
 
 /**
- * `prependContent` inserts the parsed `source` at the start of the
- * operated on node.
+ * Inserts the given `source` at the start of the operated on parent.
  *
- * @param {String} source - The source to parse and insert.
+ * @param {string} source - The source to parse and insert.
  * @return {Range} - A range object with its startContainer set to the
- *                   first prepended node, and endContainer set to to
- *                   the last prepended node.
- * @global
+ *   first prepended node, and endContainer to the last prepended node.
+ * @this Parent
  * @private
  */
 function prependContent(source) {
@@ -136,14 +133,12 @@ function prependContent(source) {
 }
 
 /**
- * `appendContent` inserts the parsed `source` at the end of the operated
- * on node.
+ * Inserts the given `source` at the end of the operated on parent.
  *
- * @param {String} source - The source to parse and insert.
+ * @param {string} source - The source to parse and insert.
  * @return {Range} - A range object with its startContainer set to the
- *                   first appended node, and endContainer set to to the
- *                   last appended node.
- * @global
+ *   first appended node, and endContainer to the last appended node.
+ * @this Parent
  * @private
  */
 function appendContent(source) {
@@ -151,9 +146,9 @@ function appendContent(source) {
 }
 
 /**
- * `removeContent` removes the content of the operated on node.
+ * Removes the content of the operated on parent.
  *
- * @global
+ * @this Parent
  * @private
  */
 function removeContent() {
@@ -161,14 +156,13 @@ function removeContent() {
 }
 
 /**
- * `replaceContent` inserts the parsed `source` at the end of the operated
- * on node, and removes its previous children.
+ * Inserts the given `source` at the end of the operated on parent and
+ * removes its previous content.
  *
- * @param {String} source - The source to parse and insert.
+ * @param {string} source - The source to parse and insert.
  * @return {Range} - A range object with its startContainer set to the
- *                   first appended node, and endContainer set to to the
- *                   last appended node.
- * @global
+ *   first inserted node, and endContainer to the last inserted node.
+ * @this Parent
  * @private
  */
 function replaceContent(source) {
@@ -207,51 +201,32 @@ function attach(retext) {
     retext.use(retextRange);
 
     /**
-     * `prependContent` inserts the parsed `source` at the start of the
-     * operated on parent.
-     *
-     * @param {String} source - The source to parse and insert.
-     * @return {Range} - A range object with its startContainer set to the
-     *                   first prepended node, and endContainer set to to
-     *                   the last prepended node.
-     * @api public
+     * Expose `prependContent` on Parent.
+     * @public
      * @memberof TextOM.Parent.prototype
      */
     elementPrototype.prependContent = parentPrototype.prependContent =
         prependContent;
 
     /**
-     * `appendContent` inserts the parsed `source` at the end of the operated
-     * on parent.
-     *
-     * @param {String} source - The source to parse and insert.
-     * @return {Range} - A range object with its startContainer set to the
-     *                   first appended node, and endContainer set to to the
-     *                   last appended node.
-     * @api public
+     * Expose `appendContent` on Parent.
+     * @public
      * @memberof TextOM.Parent.prototype
      */
     elementPrototype.appendContent = parentPrototype.appendContent =
         appendContent;
 
     /**
-     * `removeContent` removes the content of the operated on parent.
-     *
-     * @api public
+     * Expose `removeContent` on Parent.
+     * @public
      * @memberof TextOM.Parent.prototype
      */
     elementPrototype.removeContent = parentPrototype.removeContent =
         removeContent;
 
     /**
-     * `replaceContent` inserts the parsed `source` at the end of the operated
-     * on parent, and removes its previous children.
-     *
-     * @param {String} source - The source to parse and insert.
-     * @return {Range} - A range object with its startContainer set to the
-     *                   first appended node, and endContainer set to to the
-     *                   last appended node.
-     * @api public
+     * Expose `replaceContent` on Parent.
+     * @public
      * @memberof TextOM.Parent.prototype
      */
     elementPrototype.replaceContent = parentPrototype.replaceContent =
