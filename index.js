@@ -238,27 +238,3 @@ function attach(retext) {
  * @memberof exports
  */
 exports.attach = attach;
-
-/**
- * Expose `prependContent`.
- * @memberof exports
- */
-exports.prependContent = prependContent;
-
-/**
- * Expose `appendContent`.
- * @memberof exports
- */
-exports.appendContent = appendContent;
-
-/**
- * Expose `removeContent`.
- * @memberof exports
- */
-exports.removeContent = removeContent;
-
-/**
- * Expose `replaceContent`.
- * @memberof exports
- */
-exports.replaceContent = replaceContent;

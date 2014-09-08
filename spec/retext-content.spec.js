@@ -18,22 +18,6 @@ describe('retext-content', function () {
     it('should export an `attach` method', function () {
         assert(typeof content.attach === 'function');
     });
-
-    it('should export a `prependContent` method', function () {
-        assert(typeof content.prependContent === 'function');
-    });
-
-    it('should export a `appendContent` method', function () {
-        assert(typeof content.appendContent === 'function');
-    });
-
-    it('should export a `removeContent` method', function () {
-        assert(typeof content.removeContent === 'function');
-    });
-
-    it('should export a `replaceContent` method', function () {
-        assert(typeof content.replaceContent === 'function');
-    });
 });
 
 describe('retext-content.attach', function () {
