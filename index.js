@@ -54,15 +54,20 @@ function insert(parent, item, source) {
     if (!parent || !parent.TextOM ||
         !(parent instanceof parent.TextOM.Parent ||
         parent instanceof parent.TextOM.Element)) {
-            throw new TypeError('Type Error');
+            throw new TypeError(
+                'Type Error: \'' + parent +
+                '\' is not a valid parent for \'insert\''
+            );
     }
 
     parser = parent.TextOM.parser;
     tokenizer = getTokenizer(parser, parent);
 
     if (!tokenizer) {
-        throw new TypeError('Illegal invocation: \'' + source +
-            '\' is not a valid context object for \'insert\'');
+        throw new TypeError(
+            'Illegal invocation: \'' + parent +
+            '\' is not a valid context object for \'insert\''
+        );
     }
 
     tree = fromAST(parent.TextOM, tokenizer.call(parser, source));
@@ -70,8 +75,10 @@ function insert(parent, item, source) {
     range = new parent.TextOM.Range();
 
     if (!tree.head) {
-        throw new TypeError('Illegal invocation: \'' + source +
-            '\' is not a valid argument for \'insert\'');
+        throw new TypeError(
+            'Illegal invocation: \'' + source +
+            '\' is not a valid source for \'insert\''
+        );
     }
 
     range.setStart(tree.head);
@@ -99,7 +106,10 @@ function remove(items) {
 
     if (!items || !('length' in items) ||
         !('TextOM' in items || items instanceof Array)) {
-            throw new TypeError('Type Error');
+            throw new TypeError(
+                'Type Error: \'' + items +
+                '\' is neither a valid node nor list of nodes for \'remove\''
+            );
     }
 
     items = slice.call(items);
@@ -167,7 +177,10 @@ function replaceContent(source) {
 
     if (!self || !self.TextOM || !(self instanceof self.TextOM.Parent ||
         self instanceof self.TextOM.Element)) {
-            throw new TypeError('Type Error');
+            throw new TypeError(
+                'Type Error: the context object is not a valid parent' +
+                ' for \'replaceContent\''
+            );
     }
 
     items = slice.call(self);
