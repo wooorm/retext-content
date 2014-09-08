@@ -49,6 +49,8 @@ root.toString(); // "One paragraph.\n\n"
 
 ## API
 
+Note that **retext-content** does not validate if an actual word is given when replacing its value. This might result in incorrect trees (a word with its value set to a sentence), but makes it possible to easily classify values which parsers might classify wrongly, correctly.
+
 #### TextOM.Parent#prependContent(value)
 
 ```js
