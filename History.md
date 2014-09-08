@@ -1,4 +1,12 @@
 
+n.n.n / 2014-09-08
+==================
+
+ * Remove `npm update npm` from travis before_install
+ * Add bower_components, components to .gitignore
+ * Update retext to 0.1.1
+ * Add npm deployment to travis
+
 0.2.0 / 2014-09-08
 ==================
 
