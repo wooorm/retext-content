@@ -57,7 +57,7 @@ root.toString(); // "One paragraph.\n\nTwo paragraphs."
 
 ## API
 
-Note that **retext-content** does not validate if an actual word is given when replacing its value. This might result in incorrect trees (a word with its value set to a sentence), but makes it possible to easily classify values which parsers might classify wrongly, correctly.
+Note that **retext-content** does not validate, when for example operating on a sentence, if an actual given values could contain more than one sentences. This might result in incorrect trees (such as, a word with its value set to a sentence), but makes it possible to correctly classify values which parsers might classify wrongly.
 
 #### TextOM.Parent#prependContent(value)
 
@@ -71,7 +71,7 @@ rootNode.head.head.prependContent('A document including a ')
 rootNode.toString(); // 'A document including a simple sentence.'
 ```
 
-Inserts the parsed value at the beginning of the parent.
+Inserts the parsed nodes at the beginning of the node.
 
 - `value` (Non-empty `String`): The to-parse and prepend inside content.
 
@@ -87,7 +87,7 @@ rootNode.head.head.appendContent(' including a simple sentence');
 rootNode.toString(); // 'A document including a simple sentence.'
 ```
 
-Inserts the parsed value at the end of the parent.
+Inserts the parsed nodes at the end of the node.
 
 - `value` (Non-empty `String`): The to-parse and append inside content.
 
@@ -103,7 +103,7 @@ rootNode.head.head.removeContent();
 rootNode.toString(); // ' Another sentence.'
 ```
 
-Removes the current content of the parent.
+Removes all children of the node.
 
 #### TextOM.Parent#replaceContent(value?)
 
@@ -117,7 +117,7 @@ rootNode.head.replaceContent('One sentence. Two sentences.');
 rootNode.toString(); // 'One sentence. Two sentences.'
 ```
 
-Removes the current content of the parent, and replaces it with the parsed value.
+Removes all children of the node, inserts the parsed nodes.
 
 - `value` (`String`): The to-parse and insert inside content.
 
@@ -133,7 +133,7 @@ rootNode.head.head.removeOuterContent();
 rootNode.toString(); // ' Another sentence.'
 ```
 
-Removes the current element.
+Removes the node.
 
 #### TextOM.Parent#replaceOuterContent(value?)
 
@@ -147,7 +147,7 @@ rootNode.head.replaceOuterContent('One sentence.\n\nTwo sentences.');
 rootNode.toString(); // 'One sentence.\n\nTwo sentences.'
 ```
 
-Replaced the current element, and replaces it with the parsed nodes.
+Replaces the node with the parsed nodes.
 
 - `value` (`String`): The to-parse and replace-with content.
 
