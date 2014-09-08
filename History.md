@@ -1,5 +1,5 @@
 
-n.n.n / 2014-09-08
+0.2.1 / 2014-09-08
 ==================
 
  * Remove `npm update npm` from travis before_install
