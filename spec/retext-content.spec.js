@@ -48,6 +48,20 @@ describe('retext-content.attach', function () {
             assert('replaceContent' in TextOM.Element.prototype);
         }
     );
+
+    it('should attach a `removeOuterContent` method to `TextOM.Parent#',
+        function () {
+            assert('removeOuterContent' in TextOM.Parent.prototype);
+            assert('removeOuterContent' in TextOM.Element.prototype);
+        }
+    );
+
+    it('should attach a `replaceOuterContent` method to `TextOM.Parent#',
+        function () {
+            assert('replaceOuterContent' in TextOM.Parent.prototype);
+            assert('replaceOuterContent' in TextOM.Element.prototype);
+        }
+    );
 });
 
 describe('Parent#prependContent(value)', function () {
@@ -510,6 +524,170 @@ describe('Parent#removeContent()', function () {
                 sentence.parent.parent.toString() ===
                 ' Containing two paragraphs.\n\n' +
                 'The first paragraph contains two sentences.'
+            );
+        }
+    );
+});
+
+describe('Parent#removeOuterContent()', function () {
+    it('should be of type `function`', function () {
+        assert(
+            typeof TextOM.Element.prototype.removeOuterContent === 'function'
+        );
+    });
+
+    it('should throw, when not opperating on an element', function () {
+        var root = retext.parse('A document.');
+
+        assert.throws(function () {
+            root.removeOuterContent.call();
+        }, /Type Error/);
+
+        assert.throws(function () {
+            root.removeOuterContent();
+        }, /Type Error/);
+
+        assert.throws(function () {
+            root.removeOuterContent.call(new TextOM.TextNode('test'));
+        }, /Type Error/);
+    });
+
+    it('should remove the operated on node when operating on an element',
+        function () {
+            var root;
+
+            root = retext.parse(
+                'A document. Containing two paragraphs.\n\n' +
+                'The first paragraph contains two sentences.'
+            );
+
+            root.head.removeOuterContent();
+
+            assert(root.length === 2);
+            assert(
+                root.toString() ===
+                '\n\nThe first paragraph contains two sentences.'
+            );
+        }
+    );
+});
+
+describe('Parent#replaceOuterContent(value?)', function () {
+    it('should be of type `function`', function () {
+        assert(
+            typeof TextOM.Parent.prototype.replaceOuterContent === 'function'
+        );
+    });
+
+    it('should NOT throw, when given an empty value', function () {
+        assert.doesNotThrow(function () {
+            retext.parse('A document.').head.replaceOuterContent('');
+        });
+
+        assert.doesNotThrow(function () {
+            retext.parse('A document.').head.replaceOuterContent();
+        });
+    });
+
+    it('should throw, when not opperating on an element', function () {
+        var root = retext.parse('A document.');
+
+        assert.throws(function () {
+            root.replaceOuterContent.call();
+        }, /Type Error/);
+
+        assert.throws(function () {
+            root.replaceOuterContent();
+        }, /Type Error/);
+
+        assert.throws(function () {
+            root.replaceOuterContent.call(new TextOM.TextNode('test'));
+        }, /Type Error/);
+    });
+
+    it('should throw, when the operated on node has an unknown parent',
+        function () {
+            var node = retext.parse('document').head.head.head;
+
+            node.parent.type = 'SomeUnknownNode';
+
+            assert.throws(function () {
+                node.replaceOuterContent();
+            }, 'context object');
+        }
+    );
+
+    it('should return a newly initialized `Range` object', function () {
+        var paragraph = retext.parse('A document.').head;
+
+        assert(
+            paragraph.replaceOuterContent() instanceof TextOM.Range
+        );
+    });
+
+    it('should replace the operated on node with new siblings', function () {
+        var root, paragraph;
+
+        root = retext.parse(
+            'A first paragraph.\n' +
+            '\n' +
+            'A second paragraph.'
+        );
+
+        paragraph = root.tail;
+
+        paragraph.replaceOuterContent(
+            'A third paragraph.\n' +
+            '\n' +
+            'A fourth paragraph.'
+        );
+
+        assert(!paragraph.parent);
+
+        assert(
+            root.toString() ===
+            'A first paragraph.\n' +
+            '\n' +
+            'A third paragraph.\n' +
+            '\n' +
+            'A fourth paragraph.'
+        );
+    });
+
+    it('should replace return a range with its start- and set to the ' +
+        'first and last inserted nodes', function () {
+            var paragraph, range;
+
+            paragraph = retext.parse(
+                'A first paragraph.\n' +
+                '\n' +
+                'A second paragraph.'
+            ).tail;
+
+            range = paragraph.replaceOuterContent(
+                'A third paragraph.\n' +
+                '\n' +
+                'A fourth paragraph.'
+            );
+
+            assert(range.startContainer instanceof TextOM.ParagraphNode);
+            assert(range.endContainer instanceof TextOM.ParagraphNode);
+
+            assert(
+                range.startContainer.toString() ===
+                'A third paragraph.'
+            );
+
+            assert(
+                range.endContainer.toString() ===
+                'A fourth paragraph.'
+            );
+
+            assert(
+                range.toString() ===
+                'A third paragraph.\n' +
+                '\n' +
+                'A fourth paragraph.'
             );
         }
     );
