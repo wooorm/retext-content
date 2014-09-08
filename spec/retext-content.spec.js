@@ -50,7 +50,7 @@ describe('retext-content.attach', function () {
     );
 });
 
-describe('Retext.parser.TextOM.Parent#prependContent(value)', function () {
+describe('Parent#prependContent(value)', function () {
     it('should be of type `function`', function () {
         assert(typeof TextOM.Parent.prototype.prependContent === 'function');
     });
@@ -80,8 +80,7 @@ describe('Retext.parser.TextOM.Parent#prependContent(value)', function () {
     });
 
     it('should throw, when opperating on an unknown node', function () {
-        var root = retext.parse('document'),
-            node = root.head.head.head;
+        var node = retext.parse('document').head.head.head;
 
         node.type = 'SomeUnknownNode';
 
@@ -190,7 +189,7 @@ describe('Retext.parser.TextOM.Parent#prependContent(value)', function () {
     );
 });
 
-describe('Retext.parser.TextOM.Parent#appendContent(value)', function () {
+describe('Parent#appendContent(value)', function () {
     it('should be of type `function`', function () {
         assert(typeof TextOM.Parent.prototype.appendContent === 'function');
     });
@@ -220,8 +219,7 @@ describe('Retext.parser.TextOM.Parent#appendContent(value)', function () {
     });
 
     it('should throw, when opperating on an unknown node', function () {
-        var root = retext.parse('document'),
-            node = root.head.head.head;
+        var node = retext.parse('document').head.head.head;
 
         node.type = 'SomeUnknownNode';
 
@@ -326,7 +324,7 @@ describe('Retext.parser.TextOM.Parent#appendContent(value)', function () {
     );
 });
 
-describe('Retext.parser.TextOM.Parent#replaceContent(value?)', function () {
+describe('Parent#replaceContent(value?)', function () {
     it('should be of type `function`', function () {
         assert(typeof TextOM.Parent.prototype.replaceContent === 'function');
     });
@@ -354,8 +352,7 @@ describe('Retext.parser.TextOM.Parent#replaceContent(value?)', function () {
     });
 
     it('should throw, when opperating on an unknown node', function () {
-        var root = retext.parse('document'),
-            node = root.head.head.head;
+        var node = retext.parse('document').head.head.head;
 
         node.type = 'SomeUnknownNode';
 
@@ -453,7 +450,7 @@ describe('Retext.parser.TextOM.Parent#replaceContent(value?)', function () {
     );
 });
 
-describe('Retext.parser.TextOM.Parent#removeContent()', function () {
+describe('Parent#removeContent()', function () {
     it('should be of type `function`', function () {
         assert(typeof TextOM.Parent.prototype.removeContent === 'function');
     });
