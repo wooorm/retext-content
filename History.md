@@ -1,4 +1,23 @@
 
+n.n.n / 2014-09-08
+==================
+
+ * Add bower.json
+ * Add removeOuterContent, replaceOuterContent
+ * Fix confusing wording in docs
+ * Add docs for removeOuterContent, replaceOuterContent
+ * Add spec for removeOuterContent, replaceOuterContent
+ * Remove extraneous unit test names
+ * Fix missing exception since 9c87110
+ * Remove functionality to export exposed functions
+ * Fix and update JSDoc comments
+ * Add note to docs on possible incorrect trees
+ * Fix confusing error messages
+ * Add cached Array#slice method
+ * Fix spec for unknown nodes
+ * Add retext as a peer dependency
+ * Update eslint, jscs, mocha, retext
+
 0.1.1 / 2014-07-13
 ==================
 
