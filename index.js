@@ -4,6 +4,8 @@ var retextRange = require('retext-range');
 
 exports = module.exports = function () {};
 
+var slice = Array.prototype.slice;
+
 function fromAST(TextOM, ast) {
     var iterator = -1,
         children, node;
@@ -100,7 +102,7 @@ function remove(items) {
             throw new TypeError('Type Error');
     }
 
-    items = [].slice.call(items);
+    items = slice.call(items);
     iterator = items.length;
 
     while (items[--iterator]) {
@@ -168,7 +170,7 @@ function replaceContent(source) {
             throw new TypeError('Type Error');
     }
 
-    items = [].slice.call(self);
+    items = slice.call(self);
 
     try {
         result = insert(self, null, source);
