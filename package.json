@@ -11,6 +11,9 @@
   "dependencies": {
     "retext-range": "^0.1.0"
   },
+  "peerDependencies": {
+    "retext": "^0.1.0"
+  },
   "devDependencies": {
     "eslint": "^0.8.0",
     "istanbul": "^0.3.0",
