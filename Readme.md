@@ -1,11 +1,5 @@
 # retext-content [![Build Status](https://travis-ci.org/wooorm/retext-content.svg?branch=master)](https://travis-ci.org/wooorm/retext-content) [![Coverage Status](https://img.shields.io/coveralls/wooorm/retext-content.svg)](https://coveralls.io/r/wooorm/retext-content?branch=master)
 
-[![browser support](https://ci.testling.com/wooorm/retext-content.png) ](https://ci.testling.com/wooorm/retext-content)
-
-See [Browser Support](#browser-support) for more information (a.k.a. don’t worry about those grey icons above).
-
----
-
 Append, prepend, remove, and replace content into/from  **[retext](https://github.com/wooorm/retext "Retext")** nodes.
 
 ## Installation
@@ -150,9 +144,6 @@ rootNode.toString(); // 'One sentence.\n\nTwo sentences.'
 Replaces the node with the parsed nodes.
 
 - `value` (`String`): The to-parse and replace-with content.
-
-## Browser Support
-Pretty much every browser (available through browserstack) runs all retext-content unit tests.
 
 ## License
 
