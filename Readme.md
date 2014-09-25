@@ -4,14 +4,19 @@ Append, prepend, remove, and replace content into/from  **[retext](https://githu
 
 ## Installation
 
-NPM:
+npm:
 ```sh
 $ npm install retext-content
 ```
 
-Component.js:
+Component:
 ```sh
 $ component install wooorm/retext-content
+```
+
+Bower:
+```sh
+$ bower install retext-content
 ```
 
 ## Usage
