@@ -23,83 +23,101 @@ $ bower install retext-content
 
 ```js
 var Retext = require('retext'),
-    content = require('retext-content');
+    content = require('retext-content'),
+    retext;
 
-var root = new Retext()
-    .use(content)
-    .parse('simple sentence.');
+retext = new Retext().use(content);
 
-// Prepend:
-rootNode.head.head.prependContent('One ');
-root.toString(); // "One simple sentence."
+retext.parse('simple sentence.', function (err, tree) {
+    /* Handle errors. */
+    if (err) {
+        throw err;
+    }
 
-// Append:
-rootNode.head.appendContent(' Two sentences.');
-root.toString(); // "One simple sentence. Two sentences."
+    /* Prepend */
+    tree.head.head.prependContent('One ');
+    tree.toString();
+    /* 'One simple sentence.' */
 
-// Replace:
-rootNode.replaceContent('One paragraph.\n\nTwo paragraphs.');
-root.toString(); // "One paragraph.\n\nTwo paragraphs."
+    /* Append */
+    tree.head.appendContent(' Two sentences.');
+    tree.toString();
+    /* 'One simple sentence. Two sentences.' */
 
-// Remove:
-rootNode.tail.removeContent();
-root.toString(); // "One paragraph.\n\n"
+    /* Replace */
+    tree.replaceContent('One paragraph.\n\nTwo paragraphs.');
+    tree.toString();
+    /* 'One paragraph.\n\nTwo paragraphs.' */
 
-// Remove outer content:
-rootNode.head.removeOuterContent();
-root.toString(); // "\n\n"
+    /* Remove */
+    tree.tail.removeContent();
+    tree.toString();
+    /* 'One paragraph.\n\n' */
 
-// Replace outer content:
-rootNode.head.replaceOuterContent("One paragraph.\n\nTwo paragraphs.");
-root.toString(); // "One paragraph.\n\nTwo paragraphs."
+    /* Remove outer content */
+    tree.head.removeOuterContent();
+    tree.toString();
+    /* '\n\n' */
+
+    /* Replace outer content */
+    tree.head.replaceOuterContent('One paragraph.\n\nTwo paragraphs.');
+    tree.toString();
+    /* 'One paragraph.\n\nTwo paragraphs.' */
+});
 ```
 
 ## API
 
-Note that **retext-content** does not validate, when for example operating on a sentence, if an actual given values could contain more than one sentences. This might result in incorrect trees (such as, a word with its value set to a sentence), but makes it possible to correctly classify values which parsers might classify wrongly.
+Note that **retext-content** does not validate—for example when operating on a sentence—if an actual given values could contain more than one sentences. This might result in incorrect trees (such as, a word with spaces), but makes it possible to correctly classify values which parsers might classify wrongly.
 
 #### TextOM.Parent#prependContent(value)
 
 ```js
-var Retext = require('retext'),
-    content = require('content'),
-    rootNode = new Retext().use(content).parse('simple sentence.');
+retext.parse('simple sentence.', function (err, tree) {
+    /**
+     * Prepend into the first sentence.
+     */
 
-// Prepend into the first sentence of the first paragraph:
-rootNode.head.head.prependContent('A document including a ')
-rootNode.toString(); // 'A document including a simple sentence.'
+    tree.head.head.prependContent('A document including a ');
+    tree.toString();
+    /* 'A document including a simple sentence.' */
+});
 ```
 
-Inserts the parsed nodes at the beginning of the node.
+Inserts the parsed `value` at the beginning of the node.
 
 - `value` (Non-empty `String`): The to-parse and prepend inside content.
 
 #### TextOM.Parent#appendContent(value)
 
 ```js
-var Retext = require('retext'),
-    content = require('content'),
-    rootNode = new Retext().use(content).parse('A document');
+retext.parse('A document', function (err, tree) {
+    /**
+     * Append into the first sentence.
+     */
 
-// Append into the first sentence of the first paragraph:
-rootNode.head.head.appendContent(' including a simple sentence');
-rootNode.toString(); // 'A document including a simple sentence.'
+    tree.head.head.appendContent(' including a simple sentence.');
+    tree.toString();
+    /* 'A document including a simple sentence.' */
+});
 ```
 
-Inserts the parsed nodes at the end of the node.
+Inserts the parsed `value` at the end of the node.
 
 - `value` (Non-empty `String`): The to-parse and append inside content.
 
 #### TextOM.Parent#removeContent()
 
 ```js
-var Retext = require('retext'),
-    content = require('content'),
-    rootNode = new Retext().use(content).parse('A sentence. Another sentence.');
+retext.parse('A sentence. Another sentence.', function (err, tree) {
+    /**
+     * Remove the content of the first sentence.
+     */
 
-// Remove the content of the first sentence of the first paragraph:
-rootNode.head.head.removeContent();
-rootNode.toString(); // ' Another sentence.'
+    tree.head.head.removeContent();
+    tree.toString();
+    /* ' Another sentence.' */
+});
 ```
 
 Removes all children of the node.
@@ -107,13 +125,15 @@ Removes all children of the node.
 #### TextOM.Parent#replaceContent(value?)
 
 ```js
-var Retext = require('retext'),
-    content = require('content'),
-    rootNode = new Retext().use(content).parse('A sentence.');
+retext.parse('A sentence. Another sentence.', function (err, tree) {
+    /**
+     * Replace the content of the first paragraph.
+     */
 
-// Replace the content of the first paragraph:
-rootNode.head.replaceContent('One sentence. Two sentences.');
-rootNode.toString(); // 'One sentence. Two sentences.'
+    tree.head.replaceContent('One sentence. Two sentences.');
+    tree.toString();
+    /* 'One sentence. Two sentences.' */
+});
 ```
 
 Removes all children of the node, inserts the parsed nodes.
@@ -123,27 +143,32 @@ Removes all children of the node, inserts the parsed nodes.
 #### TextOM.Parent#removeOuterContent()
 
 ```js
-var Retext = require('retext'),
-    content = require('content'),
-    rootNode = new Retext().use(content).parse('A sentence. Another sentence.');
+retext.parse('A sentence. Another sentence.', function (err, tree) {
+    /**
+     * Remove the first sentence.
+     */
 
-// Remove the node:
-rootNode.head.head.removeOuterContent();
-rootNode.toString(); // ' Another sentence.'
+    tree.head.head.removeOuterContent();
+    tree.toString();
+    /* ' Another sentence.' */
+});
 ```
 
 Removes the node.
+This is exactly the same as `node.remove()`.
 
 #### TextOM.Parent#replaceOuterContent(value?)
 
 ```js
-var Retext = require('retext'),
-    content = require('content'),
-    rootNode = new Retext().use(content).parse('A sentence.');
+retext.parse('A sentence.', function (err, tree) {
+    /**
+     * Replace the first sentence with two sentences.
+     */
 
-// Replace the content of the first paragraph:
-rootNode.head.replaceOuterContent('One sentence.\n\nTwo sentences.');
-rootNode.toString(); // 'One sentence.\n\nTwo sentences.'
+    tree.head.head.replaceOuterContent('One sentence.\n\nTwo sentences.');
+    tree.toString();
+    /* 'One sentence.\n\nTwo sentences.' */
+});
 ```
 
 Replaces the node with the parsed nodes.
