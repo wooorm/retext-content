@@ -9,18 +9,15 @@
   "author": "Titus Wormer <tituswormer@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "retext-range": "^0.1.0"
-  },
-  "peerDependencies": {
-    "retext": "^0.1.1"
+    "retext-range": "^0.1.1"
   },
   "devDependencies": {
     "eslint": "^0.8.0",
     "istanbul": "^0.3.0",
     "jscs": "^1.5.0",
     "mocha": "^1.20.0",
-    "retext": "^0.1.1",
-    "retext-ast": "^0.1.0"
+    "retext": "^0.2.0-rc.2",
+    "retext-ast": "^0.1.2"
   },
   "repository": {
     "type": "git",
