@@ -1,93 +1,174 @@
 'use strict';
 
-var retextRange = require('retext-range');
+/**
+ * Module dependencies.
+ */
 
-exports = module.exports = function () {};
+var retextRange;
 
-var slice = Array.prototype.slice;
+retextRange = require('retext-range');
 
-function fromAST(TextOM, ast) {
-    var iterator = -1,
-        children, node;
+/**
+ * Constants.
+ */
 
-    node = new TextOM[ast.type]();
+var has,
+    slice;
 
-    if ('children' in ast) {
-        iterator = -1;
-        children = ast.children;
+slice = Array.prototype.slice;
+has = Object.prototype.hasOwnProperty;
 
-        while (children[++iterator]) {
-            node.append(fromAST(TextOM, children[iterator]));
+/**
+ * Define `content`.
+ */
+
+function content() {}
+
+/**
+ * Transform a concrete syntax tree into a tree constructed
+ * from a given object model.
+ *
+ * @param {Object} TextOM - the object model.
+ * @param {Object} cst - the concrete syntax tree to
+ *   transform.
+ * @return {Node} the node constructed from the
+ *   CST and the object model.
+ */
+
+function fromCST(TextOM, cst) {
+    var index,
+        node,
+        children,
+        data,
+        attribute;
+
+    node = new TextOM[cst.type]();
+
+    if ('children' in cst) {
+        index = -1;
+        children = cst.children;
+
+        while (children[++index]) {
+            node.append(fromCST(TextOM, children[index]));
         }
     } else {
-        node.fromString(ast.value);
+        node.fromString(cst.value);
+    }
+
+    /**
+     * Currently, `data` properties are not really
+     * specified or documented. Therefore, the following
+     * branch is ignored by Istanbul.
+     *
+     * The idea is that plugins and parsers can each
+     * attach data to nodes, in a similar fashion to the
+     * DOMs dataset, which can be stringified and parsed
+     * back and forth between the concrete syntax tree
+     * and the node.
+     */
+
+    /* istanbul ignore if: TODO, Untestable, will change soon. */
+    if ('data' in cst) {
+        data = cst.data;
+
+        for (attribute in data) {
+            if (has.call(data, attribute)) {
+                node.data[attribute] = data[attribute];
+            }
+        }
     }
 
     return node;
 }
 
+/**
+ * Get a tokenizer for a given node.
+ *
+ * @param {Object} parser
+ * @param {Node} node
+ * @return {Function?}
+ */
+
 function getTokenizer(parser, node) {
-    var type = node.type.substr(0, node.type.indexOf('Node'));
+    var type;
+
+    type = node.type.substr(0, node.type.indexOf('Node'));
 
     if ('tokenize' + type in parser) {
         return parser['tokenize' + type];
     }
+
+    return null;
 }
 
 /**
- * Inserts the given source after (when given), the `item`, and
- * otherwise as the first item of the given parent. Tries to be smart
- * about which nodes to add (i.e., nodes of the same or without
- * hierarchy).
+ * Insert the given value after (when given) `node` or
+ * the `head` of `parent`.
  *
- * @param {Parent} parent - The node to insert into.
- * @param {?Item} item - The node to insert after.
- * @param {string} source - The source to parse and insert.
- * @return {Range} - A range object with its startContainer set to the
- *   first inserted node, and endContainer to the last inserted node.
- * @private
+ * Tries to be smart about which nodes to add: nodes of
+ * the same type or without hierarchy.
+ *
+ * @param {Parent} parent - Node to insert into.
+ * @param {Child?} node - Node to insert after.
+ * @param {string} value - Value to parse and insert.
+ * @return {Range} - Range with its `startContainer` set
+ *   to the first inserted node and `endContainer` to
+ *   the last inserted node.
  */
-function insert(parent, item, source) {
-    var parser, range, tokenizer, tree, iterator;
 
-    if (!parent || !parent.TextOM ||
-        !(parent instanceof parent.TextOM.Parent ||
-        parent instanceof parent.TextOM.Element)) {
-            throw new TypeError(
-                'Type Error: \'' + parent +
-                '\' is not a valid parent for \'insert\''
-            );
+function insert(parent, node, value) {
+    var TextOM,
+        parser,
+        range,
+        tokenizer,
+        tree,
+        index;
+
+    if (
+        !parent ||
+        !parent.TextOM ||
+        !(
+            parent instanceof parent.TextOM.Parent ||
+            parent instanceof parent.TextOM.Element
+        )
+    ) {
+        throw new TypeError(
+            'TypeError: `' + parent + '` is not a valid ' +
+            'parent for `insert(parent, node?, value)`'
+        );
     }
 
-    parser = parent.TextOM.parser;
+    TextOM = parent.TextOM;
+    parser = TextOM.parser;
+
     tokenizer = getTokenizer(parser, parent);
 
     if (!tokenizer) {
         throw new TypeError(
-            'Illegal invocation: \'' + parent +
-            '\' is not a valid context object for \'insert\''
+            'TypeError: `' + parent + '` is not a valid ' +
+            'parent for `insert(parent, node?, value)`'
         );
     }
 
-    tree = fromAST(parent.TextOM, tokenizer.call(parser, source));
+    tree = fromCST(TextOM, tokenizer.call(parser, value));
 
-    range = new parent.TextOM.Range();
+    range = new TextOM.Range();
 
     if (!tree.head) {
         throw new TypeError(
-            'Illegal invocation: \'' + source +
-            '\' is not a valid source for \'insert\''
+            'Illegal invocation: `' + value +
+            '` is not a valid value for `insert`'
         );
     }
 
     range.setStart(tree.head);
     range.setEnd(tree.tail || tree.head);
 
-    iterator = tree.length;
+    index = tree.length;
 
-    while (tree[--iterator]) {
-        (item ? item.after : parent.prepend).call(
-            item || parent, tree[iterator]
+    while (tree[--index]) {
+        (node ? node.after : parent.prepend).call(
+            node || parent, tree[index]
         );
     }
 
@@ -95,102 +176,121 @@ function insert(parent, item, source) {
 }
 
 /**
- * Removes each item in `items`.
+ * Removes each node in `nodes`.
  *
- * @param {Parent|Array.<Child>} items - The nodes to remove.
- * @private
+ * @param {Parent|Array.<Child>} nodes
  */
-function remove(items) {
-    var iterator;
 
-    if (!items || !('length' in items) ||
-        !('TextOM' in items || items instanceof Array)) {
-            throw new TypeError(
-                'Type Error: \'' + items +
-                '\' is neither a valid node nor list of nodes for \'remove\''
-            );
+function remove(nodes) {
+    var index;
+
+    if (
+        !nodes ||
+        !('length' in nodes) ||
+        !(
+            'TextOM' in nodes ||
+            nodes instanceof Array
+        )
+    ) {
+        throw new TypeError(
+            'TypeError: `' + nodes + '` is neither a ' +
+            'node nor list of nodes for `remove(nodes)`'
+        );
     }
 
-    items = slice.call(items);
-    iterator = items.length;
+    nodes = slice.call(nodes);
+    index = nodes.length;
 
-    while (items[--iterator]) {
-        items[iterator].remove();
+    while (index--) {
+        nodes[index].remove();
     }
 }
 
 /**
- * Inserts the given `source` at the start of the operated on parent.
+ * Inserts `value` at the start of the operated on parent.
  *
- * @param {string} source - The source to parse and insert.
- * @return {Range} - A range object with its startContainer set to the
- *   first prepended node, and endContainer to the last prepended node.
+ * @param {string} value - Value to parse and insert.
+ * @return {Range} - Range with its `startContainer` set
+ *   to the first inserted node and `endContainer` to
+ *   the last inserted node.
  * @this Parent
- * @private
  */
-function prependContent(source) {
-    return insert(this, null, source);
+
+function prependContent(value) {
+    return insert(this, null, value);
 }
 
 /**
- * Inserts the given `source` at the end of the operated on parent.
+ * Inserts `value` at the end of the operated on parent.
  *
- * @param {string} source - The source to parse and insert.
- * @return {Range} - A range object with its startContainer set to the
- *   first appended node, and endContainer to the last appended node.
+ * @param {string} value - Value to parse and insert.
+ * @return {Range} - Range with its `startContainer` set
+ *   to the first inserted node and `endContainer` to
+ *   the last inserted node.
  * @this Parent
- * @private
  */
-function appendContent(source) {
-    return insert(this, this && (this.tail || this.head), source);
+
+function appendContent(value) {
+    return insert(this, this && (this.tail || this.head), value);
 }
 
 /**
  * Removes the content of the operated on parent.
  *
  * @this Parent
- * @private
  */
+
 function removeContent() {
     remove(this);
 }
 
 /**
- * Inserts the given `source` at the end of the operated on parent and
- * removes its previous content.
+ * Replaces the content of `parent` with `value`.
  *
- * @param {string} source - The source to parse and insert.
- * @return {Range} - A range object with its startContainer set to the
- *   first inserted node, and endContainer to the last inserted node.
+ * @param {string} value - Value to parse and insert.
+ * @return {Range} - Range with its `startContainer` set
+ *   to the first inserted node and `endContainer` to
+ *   the last inserted node.
  * @this Parent
- * @private
  */
-function replaceContent(source) {
-    var self = this,
-        items, result;
+function replaceContent(value) {
+    var self,
+        nodes,
+        result;
 
-    if (!self || !self.TextOM || !(self instanceof self.TextOM.Parent ||
-        self instanceof self.TextOM.Element)) {
-            throw new TypeError(
-                'Type Error: the context object is not a valid parent' +
-                ' for \'replaceContent\''
-            );
+    self = this;
+
+    if (
+        !self ||
+        !self.TextOM ||
+        !(
+            self instanceof self.TextOM.Parent ||
+            self instanceof self.TextOM.Element
+        )
+    ) {
+        throw new TypeError(
+            'TypeError: `' + self + '` is not a valid ' +
+            'parent for `Parent#replaceContent(value?)`'
+        );
     }
 
-    items = slice.call(self);
+    nodes = slice.call(self);
 
-    /* Do not throw on empty given values. */
+    /**
+     * Do not throw on empty `value`.
+     */
+
     try {
-        result = insert(self, null, source);
+        result = insert(self, null, value);
     } catch (error) {
-        if (error.toString().indexOf('valid source') === -1) {
+        if (error.toString().indexOf('valid value') === -1) {
             throw error;
         }
 
         result = new self.TextOM.Range();
     }
 
-    remove(items);
+    remove(nodes);
 
     return result;
 }
@@ -199,15 +299,23 @@ function replaceContent(source) {
  * Removes the operated on element (both parent and child).
  *
  * @this Element
- * @private
  */
-function removeOuterContent() {
-    var self = this;
 
-    if (!self || !self.TextOM || !(self instanceof self.TextOM.Element)) {
+function removeOuterContent() {
+    var self;
+
+    self = this;
+
+    if (
+        !self ||
+        !self.TextOM ||
+        !(
+            self instanceof self.TextOM.Element
+        )
+    ) {
         throw new TypeError(
-            'Type Error: the context object is not a valid element' +
-            ' for \'removeOuterContent\''
+            'TypeError: `' + self + '` is not a valid ' +
+            'element for `Element#removeOuterContent()`'
         );
     }
 
@@ -215,34 +323,43 @@ function removeOuterContent() {
 }
 
 /**
- * Replaced the operated on element (both parent and child) with the given
- * `source`.
+ * Replace the operated on element with `value`.
  *
- * @param {string} source - The source to parse and insert.
- * @return {Range} - A range object with its startContainer set to the
- *   first inserted node, and endContainer to the last inserted node.
+ * @param {string} value - Value to parse and insert.
+ * @return {Range} - Range with its `startContainer` set
+ *   to the first inserted node and `endContainer` to
+ *   the last inserted node.
  * @this Element
- * @private
  */
-function replaceOuterContent(source) {
-    var self = this,
+
+function replaceOuterContent(value) {
+    var self,
         result;
 
+    self = this;
+
     if (
-        !self || !self.TextOM || !self.parent ||
-        !(self instanceof self.TextOM.Element)
+        !self ||
+        !self.TextOM ||
+        !self.parent ||
+        !(
+            self instanceof self.TextOM.Element
+        )
     ) {
         throw new TypeError(
-            'Type Error: the context object is not a valid element' +
-            ' for \'replaceOuterContent\''
+            'TypeError: `' + self + '` is not a valid ' +
+            'element for `Element#replaceOuterContent(value?)`'
         );
     }
 
-    /* Do not throw on empty given values. */
+    /**
+     * Do not throw on empty `value`.
+     */
+
     try {
-        result = insert(self.parent, self, source);
+        result = insert(self.parent, self, value);
     } catch (error) {
-        if (error.toString().indexOf('valid source') === -1) {
+        if (error.toString().indexOf('valid value') === -1) {
             throw error;
         }
 
@@ -255,64 +372,71 @@ function replaceOuterContent(source) {
 }
 
 function attach(retext) {
-    var TextOM = retext.TextOM,
-        elementPrototype = TextOM.Element.prototype,
-        parentPrototype = TextOM.Parent.prototype;
+    var TextOM,
+        elementPrototype,
+        parentPrototype;
 
-    /* Use retext-range */
+    TextOM = retext.TextOM;
+    elementPrototype = TextOM.Element.prototype;
+    parentPrototype = TextOM.Parent.prototype;
+
+    /**
+     * Depend on `retext-range`.
+     */
+
     retext.use(retextRange);
 
     /**
      * Expose `prependContent` on Parent.
-     * @public
-     * @memberof TextOM.Parent.prototype
      */
-    elementPrototype.prependContent = parentPrototype.prependContent =
-        prependContent;
+
+    elementPrototype.prependContent = prependContent;
+    parentPrototype.prependContent = prependContent;
 
     /**
      * Expose `appendContent` on Parent.
-     * @public
-     * @memberof TextOM.Parent.prototype
      */
-    elementPrototype.appendContent = parentPrototype.appendContent =
-        appendContent;
+
+    elementPrototype.appendContent = appendContent;
+    parentPrototype.appendContent = appendContent;
 
     /**
      * Expose `removeContent` on Parent.
-     * @public
-     * @memberof TextOM.Parent.prototype
      */
-    elementPrototype.removeContent = parentPrototype.removeContent =
-        removeContent;
+
+    elementPrototype.removeContent = removeContent;
+    parentPrototype.removeContent = removeContent;
 
     /**
      * Expose `replaceContent` on Parent.
-     * @public
-     * @memberof TextOM.Parent.prototype
      */
-    elementPrototype.replaceContent = parentPrototype.replaceContent =
-        replaceContent;
+
+    elementPrototype.replaceContent = replaceContent;
+    parentPrototype.replaceContent = replaceContent;
 
     /**
      * Expose `removeOuterContent` on (Parent and) Element.
-     * @public
-     * @memberof TextOM.Element.prototype
      */
-    elementPrototype.removeOuterContent =
-        parentPrototype.removeOuterContent = removeOuterContent;
+
+    elementPrototype.removeOuterContent = removeOuterContent;
+    parentPrototype.removeOuterContent = removeOuterContent;
 
     /**
      * Expose `replaceOuterContent` on (Parent and) Element.
-     * @public
-     * @memberof TextOM.Element.prototype
      */
-    elementPrototype.replaceOuterContent =
-        parentPrototype.replaceOuterContent = replaceOuterContent;
+
+    elementPrototype.replaceOuterContent = replaceOuterContent;
+    parentPrototype.replaceOuterContent = replaceOuterContent;
 }
 
 /**
  * Expose `attach`.
- * @memberof exports
  */
-exports.attach = attach;
+
+content.attach = attach;
+
+/**
+ * Expose `content`.
+ */
+
+module.exports = content;

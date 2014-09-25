@@ -93,7 +93,7 @@ describe('Parent#prependContent(value)', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.prependContent('');
-            }, /''/);
+            }, /``/);
 
             assert.throws(function () {
                 tree.prependContent();
@@ -107,11 +107,11 @@ describe('Parent#prependContent(value)', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.prependContent.call();
-            }, /Type Error/);
+            }, /undefined/);
 
             assert.throws(function () {
                 tree.prependContent.call(new TextOM.TextNode('test'));
-            }, /Type Error/);
+            }, /test/);
 
             done(err);
         });
@@ -123,7 +123,7 @@ describe('Parent#prependContent(value)', function () {
 
             assert.throws(function () {
                 tree.prependContent();
-            }, /context object/);
+            }, /A document\./);
 
             done(err);
         });
@@ -274,7 +274,7 @@ describe('Parent#appendContent(value)', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.appendContent('');
-            }, /''/);
+            }, /``/);
 
             assert.throws(function () {
                 tree.appendContent();
@@ -288,11 +288,11 @@ describe('Parent#appendContent(value)', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.appendContent.call();
-            }, /Type Error/);
+            }, /undefined/);
 
             assert.throws(function () {
                 tree.appendContent.call(new TextOM.TextNode('test'));
-            }, /Type Error/);
+            }, /test/);
 
             done(err);
         });
@@ -304,7 +304,7 @@ describe('Parent#appendContent(value)', function () {
 
             assert.throws(function () {
                 tree.appendContent();
-            }, /context object/);
+            }, /A document\./);
 
             done(err);
         });
@@ -455,7 +455,7 @@ describe('Parent#replaceContent(value?)', function () {
         retext.parse('A document.', function (err, tree) {
             assert.doesNotThrow(function () {
                 tree.replaceContent('');
-            }, /''/);
+            }, /``/);
 
             assert.doesNotThrow(function () {
                 tree.replaceContent();
@@ -469,11 +469,11 @@ describe('Parent#replaceContent(value?)', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.replaceContent.call();
-            }, /Type Error/);
+            }, /undefined/);
 
             assert.throws(function () {
                 tree.replaceContent.call(new TextOM.TextNode('test'));
-            }, /Type Error/);
+            }, /test/);
 
             done(err);
         });
@@ -485,7 +485,7 @@ describe('Parent#replaceContent(value?)', function () {
 
             assert.throws(function () {
                 tree.replaceContent();
-            }, /context object/);
+            }, /A document\./);
 
             done(err);
         });
@@ -637,11 +637,11 @@ describe('Parent#removeContent()', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.removeContent.call();
-            }, /Type Error/);
+            }, /undefined/);
 
             assert.throws(function () {
                 tree.removeContent.call(new TextOM.TextNode('test'));
-            }, /Type Error/);
+            }, /test/);
 
             done(err);
         });
@@ -723,15 +723,15 @@ describe('Parent#removeOuterContent()', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.removeOuterContent.call();
-            }, /Type Error/);
+            }, /undefined/);
 
             assert.throws(function () {
                 tree.removeOuterContent();
-            }, /Type Error/);
+            }, /A document\./);
 
             assert.throws(function () {
                 tree.removeOuterContent.call(new TextOM.TextNode('test'));
-            }, /Type Error/);
+            }, /test/);
 
             done(err);
         });
@@ -786,15 +786,15 @@ describe('Parent#replaceOuterContent(value?)', function () {
         retext.parse('A document.', function (err, tree) {
             assert.throws(function () {
                 tree.replaceOuterContent.call();
-            }, /Type Error/);
+            }, /undefined/);
 
             assert.throws(function () {
                 tree.replaceOuterContent();
-            }, /Type Error/);
+            }, /A document\./);
 
             assert.throws(function () {
                 tree.replaceOuterContent.call(new TextOM.TextNode('test'));
-            }, /Type Error/);
+            }, /test/);
 
             done(err);
         });
@@ -802,12 +802,12 @@ describe('Parent#replaceOuterContent(value?)', function () {
 
     it('should throw when the operated on node has an unknown parent',
         function (done) {
-            retext.parse('document', function (err, tree) {
+            retext.parse('A document.', function (err, tree) {
                 tree.type = 'SomeUnknownNode';
 
                 assert.throws(function () {
                     tree.head.replaceOuterContent();
-                }, /context object/);
+                }, /A document\./);
 
                 done(err);
             });
