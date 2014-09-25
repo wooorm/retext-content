@@ -3,3 +3,4 @@ bower_components
 components
 .DS_Store
 coverage
+*.log
