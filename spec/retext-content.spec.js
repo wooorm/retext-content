@@ -1,26 +1,46 @@
 'use strict';
 
-var content, retextAST, Retext, assert, TextOM, retext;
+var content,
+    retextAST,
+    Retext,
+    assert,
+    TextOM,
+    retext;
+
+/**
+ * Module dependencies.
+ */
 
 content = require('..');
 retextAST = require('retext-ast');
 Retext = require('retext');
 assert = require('assert');
 
-retext = new Retext().use(retextAST).use(content);
-TextOM = retext.parser.TextOM;
+/**
+ * Retext.
+ */
 
-describe('retext-content', function () {
-    it('should be of type `function`', function () {
+retext = new Retext()
+    .use(retextAST)
+    .use(content);
+
+TextOM = retext.TextOM;
+
+/**
+ * Tests.
+ */
+
+describe('retext-content()', function () {
+    it('should be a `function`', function () {
         assert(typeof content === 'function');
-    });
-
-    it('should export an `attach` method', function () {
-        assert(typeof content.attach === 'function');
     });
 });
 
-describe('retext-content.attach', function () {
+describe('retext-content.attach()', function () {
+    it('should be a `function`', function () {
+        assert(typeof content.attach === 'function');
+    });
+
     it('should attach a `prependContent` method to `TextOM.Parent#',
         function () {
             assert('prependContent' in TextOM.Parent.prototype);
@@ -65,629 +85,823 @@ describe('retext-content.attach', function () {
 });
 
 describe('Parent#prependContent(value)', function () {
-    it('should be of type `function`', function () {
+    it('should be a `function`', function () {
         assert(typeof TextOM.Parent.prototype.prependContent === 'function');
     });
 
-    it('should throw, when given an empty value', function () {
-        var root = retext.parse('A document.');
+    it('should throw when given an empty value', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.prependContent('');
+            }, /''/);
 
-        assert.throws(function () {
-            root.prependContent('');
-        }, /''/);
+            assert.throws(function () {
+                tree.prependContent();
+            }, /undefined/);
 
-        assert.throws(function () {
-            root.prependContent();
-        }, /undefined/);
+            done(err);
+        });
     });
 
-    it('should throw, when not opperating on a parent', function () {
-        var root = retext.parse('A document.');
+    it('should throw when not opperating on a parent', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.prependContent.call();
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.prependContent.call();
-        }, /Type Error/);
+            assert.throws(function () {
+                tree.prependContent.call(new TextOM.TextNode('test'));
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.prependContent.call(new TextOM.TextNode('test'));
-        }, /Type Error/);
+            done(err);
+        });
     });
 
-    it('should throw, when opperating on an unknown node', function () {
-        var node = retext.parse('document').head.head.head;
+    it('should throw when opperating on an unknown node', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            tree.type = 'SomeUnknownNode';
 
-        node.type = 'SomeUnknownNode';
+            assert.throws(function () {
+                tree.prependContent();
+            }, /context object/);
 
-        assert.throws(function () {
-            node.prependContent();
-        }, 'context object');
+            done(err);
+        });
     });
 
-    it('should return a newly initialized `Range` object', function () {
-        var root = retext.parse('A document.');
-        assert(root.prependContent('A paragraph.') instanceof TextOM.Range);
+    it('should return a `Range`', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert(
+                tree.prependContent('A paragraph.') instanceof TextOM.Range
+            );
+
+            done(err);
+        });
     });
 
-    it('should return a `Range` with a `startContainer` set to the first ' +
-        'prepended node', function () {
-            var root = retext.parse('A document.'),
-                range = root.prependContent(
+    it('should return a `Range` with `startContainer` set to the first ' +
+        'new node',
+        function (done) {
+            retext.parse('A document.', function (err, tree) {
+                var range;
+
+                range = tree.prependContent(
                     'A first paragraph.\n\nA second paragraph.\n\n'
                 );
 
-            assert(
-                range.startContainer instanceof TextOM.ParagraphNode
-            );
-            assert(
-                range.toString() ===
-                'A first paragraph.\n\nA second paragraph.\n\n'
-            );
+                assert(
+                    range.startContainer instanceof TextOM.ParagraphNode
+                );
+
+                assert(
+                    range.startContainer.toString() ===
+                    'A first paragraph.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should return a `Range` with a `endContainer` set to the last ' +
-        'prepended node', function () {
-            var root = retext.parse('A document.'),
-                range = root.prependContent(
+    it('should return a `Range` with `endContainer` set to the last ' +
+        'new node',
+        function (done) {
+            retext.parse('A document.', function (err, tree) {
+                var range;
+
+                range = tree.prependContent(
                     'A first paragraph.\n\nA second paragraph.\n\n'
                 );
 
-            assert(
-                range.endContainer instanceof TextOM.WhiteSpaceNode
-            );
-            assert(
-                range.toString() ===
-                'A first paragraph.\n\nA second paragraph.\n\n'
-            );
+                assert(
+                    range.endContainer instanceof TextOM.WhiteSpaceNode
+                );
+
+                assert(
+                    range.endContainer.toString() ===
+                    '\n\n'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should prepend one or more `ParagraphNode`s when operating on ' +
-        'a `RootNode`', function () {
-            var root = retext.parse('A document including a paragraph.');
-            root.prependContent('Another paragraph. ');
+    it('should insert one or more `ParagraphNode`s when operating on ' +
+        'a `RootNode`',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                tree.prependContent('Another paragraph. ');
 
-            assert(root.head instanceof TextOM.ParagraphNode);
-            assert(
-                root.toString() ===
-                'Another paragraph. A document including a paragraph.'
-            );
+                assert(tree.head instanceof TextOM.ParagraphNode);
+                assert(tree.toString() === 'Another paragraph. A paragraph.');
+
+                done(err);
+            });
         }
     );
 
-    it('should prepend one or more `SentenceNode`s when operating on ' +
-        'a `ParagraphNode`', function () {
-            var paragraph = retext.parse(
-                'A document including a paragraph.'
-            ).head;
+    it('should insert one or more `SentenceNode`s when operating on ' +
+        'a `ParagraphNode`',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                var node;
 
-            paragraph.prependContent('A second sentence. A third sentence. ');
+                node = tree.head;
 
-            assert(paragraph.head instanceof TextOM.SentenceNode);
-            assert(
-                paragraph.toString() ===
-                'A second sentence. A third sentence. A document ' +
-                'including a paragraph.'
-            );
+                node.prependContent(
+                    'A second sentence. A third sentence. '
+                );
+
+                assert(node.head instanceof TextOM.SentenceNode);
+                assert(
+                    node.toString() ===
+                    'A second sentence. A third sentence. A paragraph.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should prepend one or more of `WordNode`, `PunctuationNode`, ' +
-        'and `WhiteSpaceNode`, when operating on a `SentenceNode`',
-        function () {
-            var sentence = retext.parse('A sentence.').head.head;
+    it('should insert one or more `WordNode`, `PunctuationNode`, ' +
+        'and `WhiteSpaceNode`s, when operating on a `SentenceNode`',
+        function (done) {
+            retext.parse('A sentence.', function (err, tree) {
+                var node;
 
-            sentence.prependContent(
-                'Some words, whitespace, and punctuation '
-            );
+                node = tree.head.head;
 
-            assert(sentence.head instanceof TextOM.WordNode);
-            assert(
-                sentence.toString() ===
-                'Some words, whitespace, and punctuation A sentence.'
-            );
+                node.prependContent(
+                    'Some words, whitespace, and punctuation: '
+                );
+
+                assert(node.head instanceof TextOM.WordNode);
+                assert(
+                    node.toString() ===
+                    'Some words, whitespace, and punctuation: A sentence.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should prepend one or more of `WhiteSpaceNode`s, when starting or ' +
-        'ending the given value', function () {
-            var root = retext.parse('A document including a paragraph.');
-            root.prependContent('\n\nAnother paragraph.\n\n');
+    it('should insert one or more `WhiteSpaceNode`s, when starting or ' +
+        'ending the given value',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                tree.prependContent('\n\nAnother paragraph.\n\n');
 
-            assert(root.head instanceof TextOM.WhiteSpaceNode);
-            assert(
-                root.toString() ===
-                '\n\nAnother paragraph.\n\nA document including a paragraph.'
-            );
+                assert(tree.head instanceof TextOM.WhiteSpaceNode);
+                assert(
+                    tree.toString() ===
+                    '\n\nAnother paragraph.\n\nA paragraph.'
+                );
+
+                done(err);
+            });
         }
     );
 });
 
 describe('Parent#appendContent(value)', function () {
-    it('should be of type `function`', function () {
+    it('should be a `function`', function () {
         assert(typeof TextOM.Parent.prototype.appendContent === 'function');
     });
 
-    it('should throw, when given an empty value', function () {
-        var root = retext.parse('A document.');
+    it('should throw when given an empty value', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.appendContent('');
+            }, /''/);
 
-        assert.throws(function () {
-            root.appendContent('');
-        }, /''/);
+            assert.throws(function () {
+                tree.appendContent();
+            }, /undefined/);
 
-        assert.throws(function () {
-            root.appendContent();
-        }, /undefined/);
+            done(err);
+        });
     });
 
-    it('should throw, when not opperating on a parent', function () {
-        var root = retext.parse('A document.');
+    it('should throw when not opperating on a parent', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.appendContent.call();
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.appendContent.call();
-        }, /Type Error/);
+            assert.throws(function () {
+                tree.appendContent.call(new TextOM.TextNode('test'));
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.appendContent.call(new TextOM.TextNode('test'));
-        }, /Type Error/);
+            done(err);
+        });
     });
 
-    it('should throw, when opperating on an unknown node', function () {
-        var node = retext.parse('document').head.head.head;
+    it('should throw when opperating on an unknown node', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            tree.type = 'SomeUnknownNode';
 
-        node.type = 'SomeUnknownNode';
+            assert.throws(function () {
+                tree.appendContent();
+            }, /context object/);
 
-        assert.throws(function () {
-            node.appendContent();
-        }, 'context object');
+            done(err);
+        });
     });
 
-    it('should return a newly initialized `Range` object', function () {
-        var root = retext.parse('A document.');
-        assert(root.appendContent('A paragraph.') instanceof TextOM.Range);
+    it('should return a `Range`', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert(
+                tree.appendContent('A paragraph.') instanceof TextOM.Range
+            );
+
+            done(err);
+        });
     });
 
-    it('should return a `Range` with a `startContainer` set to the first ' +
-        'appended node', function () {
-            var root = retext.parse('A document.'),
-                range = root.appendContent(
-                    '\n\nA first paragraph.\n\nA second paragraph.'
+    it('should return a `Range` with `startContainer` set to the first ' +
+        'new node',
+        function (done) {
+            retext.parse('A document.', function (err, tree) {
+                var range;
+
+                range = tree.appendContent(
+                    'A first paragraph.\n\nA second paragraph.\n\n'
                 );
 
-            assert(range.startContainer instanceof TextOM.WhiteSpaceNode);
-            assert(
-                range.toString() ===
-                '\n\nA first paragraph.\n\nA second paragraph.'
-            );
-        }
-    );
-
-    it('should return a `Range` with a `endContainer` set to the last ' +
-        'appended node', function () {
-            var root = retext.parse('A document.'),
-                range = root.appendContent(
-                    '\n\nA first paragraph.\n\nA second paragraph.'
+                assert(
+                    range.startContainer instanceof TextOM.ParagraphNode
                 );
 
-            assert(range.endContainer instanceof TextOM.ParagraphNode);
-            assert(
-                range.toString() ===
-                '\n\nA first paragraph.\n\nA second paragraph.'
-            );
+                assert(
+                    range.startContainer.toString() ===
+                    'A first paragraph.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should append one or more `ParagraphNode`s when operating on ' +
-        'a `RootNode`', function () {
-            var root = retext.parse('A document including a paragraph.');
-            root.appendContent(' Another paragraph.');
+    it('should return a `Range` with `endContainer` set to the last ' +
+        'new node',
+        function (done) {
+            retext.parse('A document.', function (err, tree) {
+                var range;
 
-            assert(root.tail instanceof TextOM.ParagraphNode);
-            assert(
-                root.toString() ===
-                'A document including a paragraph. Another paragraph.'
-            );
+                range = tree.appendContent(
+                    'A first paragraph.\n\nA second paragraph.\n\n'
+                );
+
+                assert(
+                    range.endContainer instanceof TextOM.WhiteSpaceNode
+                );
+
+                assert(
+                    range.endContainer.toString() ===
+                    '\n\n'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should append one or more `SentenceNode`s when operating on a ' +
-        '`ParagraphNode`', function () {
-            var paragraph = retext.parse(
-                'A document including a paragraph.'
-            ).head;
+    it('should insert one or more `ParagraphNode`s when operating on ' +
+        'a `RootNode`',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                tree.appendContent(' Another paragraph.');
 
-            paragraph.appendContent(' A second sentence. A third sentence.');
+                assert(tree.head instanceof TextOM.ParagraphNode);
+                assert(tree.toString() === 'A paragraph. Another paragraph.');
 
-            assert(paragraph.tail instanceof TextOM.SentenceNode);
-            assert(
-                paragraph.toString() ===
-                'A document including a paragraph. A second sentence. A ' +
-                'third sentence.'
-            );
+                done(err);
+            });
         }
     );
 
-    it('should append one or more of `WordNode`, `PunctuationNode`, and ' +
-        '`WhiteSpaceNode`, when operating on a `SentenceNode`', function () {
-            var sentence = retext.parse('A sentence').head.head;
+    it('should insert one or more `SentenceNode`s when operating on ' +
+        'a `ParagraphNode`',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                var node;
 
-            sentence.appendContent(
-                ', some words, whitespace, and punctuation.'
-            );
+                node = tree.head;
 
-            assert(sentence.tail instanceof TextOM.PunctuationNode);
-            assert(
-                sentence.toString() ===
-                'A sentence, some words, whitespace, and punctuation.'
-            );
+                node.appendContent(
+                    ' A second sentence. A third sentence.'
+                );
+
+                assert(node.head instanceof TextOM.SentenceNode);
+                assert(
+                    node.toString() ===
+                    'A paragraph. A second sentence. A third sentence.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should append one or more of `WhiteSpaceNode`s, when starting or ' +
-        'ending the given value', function () {
-            var root = retext.parse('A document including a paragraph.');
-            root.appendContent('\n\nAnother paragraph.\n\n');
+    it('should insert one or more `WordNode`, `PunctuationNode`, ' +
+        'and `WhiteSpaceNode`s, when operating on a `SentenceNode`',
+        function (done) {
+            retext.parse('A sentence:', function (err, tree) {
+                var node;
 
-            assert(root.tail instanceof TextOM.WhiteSpaceNode);
-            assert(root.tail.prev.prev instanceof TextOM.WhiteSpaceNode);
-            assert(
-                root.toString() ===
-                'A document including a paragraph.\n\nAnother paragraph.\n\n'
-            );
+                node = tree.head.head;
+
+                node.appendContent(
+                    ' some words, whitespace, and punctuation.'
+                );
+
+                assert(node.head instanceof TextOM.WordNode);
+                assert(
+                    node.toString() ===
+                    'A sentence: some words, whitespace, and punctuation.'
+                );
+
+                done(err);
+            });
+        }
+    );
+
+    it('should insert one or more `WhiteSpaceNode`s, when starting or ' +
+        'ending the given value',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                tree.appendContent('\n\nAnother paragraph.\n\n');
+
+                assert(tree.tail instanceof TextOM.WhiteSpaceNode);
+                assert(
+                    tree.toString() ===
+                    'A paragraph.\n\nAnother paragraph.\n\n'
+                );
+
+                done(err);
+            });
         }
     );
 });
 
 describe('Parent#replaceContent(value?)', function () {
-    it('should be of type `function`', function () {
+    it('should be a `function`', function () {
         assert(typeof TextOM.Parent.prototype.replaceContent === 'function');
     });
 
-    it('should NOT throw, when given an empty value', function () {
-        var root = retext.parse('A document.');
-        assert.doesNotThrow(function () {
-            root.replaceContent('');
+    it('should NOT throw when given an empty value', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.doesNotThrow(function () {
+                tree.replaceContent('');
+            }, /''/);
+
+            assert.doesNotThrow(function () {
+                tree.replaceContent();
+            }, /undefined/);
+
+            done(err);
         });
-        assert.doesNotThrow(function () {
-            root.replaceContent();
+    });
+
+    it('should throw when not opperating on a parent', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.replaceContent.call();
+            }, /Type Error/);
+
+            assert.throws(function () {
+                tree.replaceContent.call(new TextOM.TextNode('test'));
+            }, /Type Error/);
+
+            done(err);
         });
     });
 
-    it('should throw, when not opperating on a parent', function () {
-        var root = retext.parse('A document.');
+    it('should throw when opperating on an unknown node', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            tree.type = 'SomeUnknownNode';
 
-        assert.throws(function () {
-            root.replaceContent.call();
-        }, /Type Error/);
+            assert.throws(function () {
+                tree.replaceContent();
+            }, /context object/);
 
-        assert.throws(function () {
-            root.replaceContent.call(new TextOM.TextNode('test'));
-        }, /Type Error/);
+            done(err);
+        });
     });
 
-    it('should throw, when opperating on an unknown node', function () {
-        var node = retext.parse('document').head.head.head;
+    it('should return a `Range`', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert(
+                tree.replaceContent('A paragraph.') instanceof TextOM.Range
+            );
 
-        node.type = 'SomeUnknownNode';
-
-        assert.throws(function () {
-            node.replaceContent();
-        }, 'context object');
+            done(err);
+        });
     });
 
-    it('should return a newly initialized `Range` object', function () {
-        var root = retext.parse('A document.');
-        assert(root.replaceContent('A paragraph.') instanceof TextOM.Range);
-    });
+    it('should return a `Range` with `startContainer` set to the first ' +
+        'new node',
+        function (done) {
+            retext.parse('A document.', function (err, tree) {
+                var range;
 
-    it('should return a `Range` with a `startContainer` set to the first ' +
-        'inserted node', function () {
-            var root = retext.parse('A document.'),
-                range = root.replaceContent(
-                    'A first paragraph.\n\nA second paragraph.'
+                range = tree.replaceContent(
+                    'A first paragraph.\n\nA second paragraph.\n\n'
                 );
 
-            assert(range.startContainer instanceof TextOM.ParagraphNode);
-            assert(
-                range.toString() ===
-                'A first paragraph.\n\nA second paragraph.'
-            );
+                assert(
+                    range.startContainer instanceof TextOM.ParagraphNode
+                );
+
+                assert(
+                    range.startContainer.toString() ===
+                    'A first paragraph.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should return a `Range` with a `endContainer` set to the last ' +
-        'inserted node', function () {
-            var root = retext.parse('A document.'),
-                range = root.replaceContent(
-                    'A first paragraph.\n\nA second paragraph.'
+    it('should return a `Range` with `endContainer` set to the last ' +
+        'new node',
+        function (done) {
+            retext.parse('A document.', function (err, tree) {
+                var range;
+
+                range = tree.replaceContent(
+                    'A first paragraph.\n\nA second paragraph.\n\n'
                 );
 
-            assert(range.endContainer instanceof TextOM.ParagraphNode);
-            assert(
-                range.toString() ===
-                'A first paragraph.\n\nA second paragraph.'
-            );
+                assert(
+                    range.endContainer instanceof TextOM.WhiteSpaceNode
+                );
+
+                assert(
+                    range.endContainer.toString() ===
+                    '\n\n'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should replace one or more `ParagraphNode`s when operating on ' +
-        'a `RootNode`', function () {
-            var root = retext.parse('A document including a paragraph.');
-            root.replaceContent('Another paragraph.');
-            assert(root.head instanceof TextOM.ParagraphNode);
-            assert(root.toString() === 'Another paragraph.');
+    it('should insert one or more `ParagraphNode`s when operating on ' +
+        'a `RootNode`',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                tree.replaceContent('Another paragraph.');
+
+                assert(tree.head instanceof TextOM.ParagraphNode);
+                assert(tree.toString() === 'Another paragraph.');
+
+                done(err);
+            });
         }
     );
 
     it('should insert one or more `SentenceNode`s when operating on ' +
-        'a `ParagraphNode`', function () {
-            var paragraph = retext.parse(
-                'A document including a paragraph.'
-            ).head;
+        'a `ParagraphNode`',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                var node;
 
-            paragraph.replaceContent(
-                'A second sentence. A third sentence.'
-            );
+                node = tree.head;
 
-            assert(paragraph.head instanceof TextOM.SentenceNode);
-            assert(paragraph.tail instanceof TextOM.SentenceNode);
-            assert(
-                paragraph.toString() ===
-                'A second sentence. A third sentence.'
-            );
+                node.replaceContent(
+                    'A second sentence. A third sentence.'
+                );
+
+                assert(node.head instanceof TextOM.SentenceNode);
+                assert(
+                    node.toString() ===
+                    'A second sentence. A third sentence.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should insert one or more of `WordNode`, `PunctuationNode`, and ' +
-        '`WhiteSpaceNode`, when operating on a `SentenceNode`', function () {
-            var sentence = retext.parse('A sentence').head.head;
-            sentence.replaceContent(
-                'Some words, whitespace, and punctuation.'
-            );
-            assert(sentence.head instanceof TextOM.WordNode);
-            assert(sentence.tail instanceof TextOM.PunctuationNode);
-            assert(
-                sentence.toString() ===
-                'Some words, whitespace, and punctuation.'
-            );
+    it('should insert one or more `WordNode`, `PunctuationNode`, ' +
+        'and `WhiteSpaceNode`s, when operating on a `SentenceNode`',
+        function (done) {
+            retext.parse('A sentence.', function (err, tree) {
+                var node;
+
+                node = tree.head.head;
+
+                node.replaceContent(
+                    'Some words, whitespace, and punctuation.'
+                );
+
+                assert(node.head instanceof TextOM.WordNode);
+                assert(
+                    node.toString() ===
+                    'Some words, whitespace, and punctuation.'
+                );
+
+                done(err);
+            });
         }
     );
 
-    it('should insert one or more of `WhiteSpaceNode`s, when starting or ' +
-        'ending the given value', function () {
-            var root = retext.parse('A document including a paragraph.');
-            root.replaceContent('\n\nAnother paragraph.\n\n');
-            assert(root.head instanceof TextOM.WhiteSpaceNode);
-            assert(root.tail instanceof TextOM.WhiteSpaceNode);
-            assert(root.toString() === '\n\nAnother paragraph.\n\n');
+    it('should insert one or more `WhiteSpaceNode`s, when starting or ' +
+        'ending the given value',
+        function (done) {
+            retext.parse('A paragraph.', function (err, tree) {
+                tree.replaceContent('\n\nAnother paragraph.\n\n');
+
+                assert(tree.head instanceof TextOM.WhiteSpaceNode);
+                assert(tree.tail instanceof TextOM.WhiteSpaceNode);
+                assert(
+                    tree.toString() ===
+                    '\n\nAnother paragraph.\n\n'
+                );
+
+                done(err);
+            });
         }
     );
 });
 
 describe('Parent#removeContent()', function () {
-    it('should be of type `function`', function () {
+    it('should be a `function`', function () {
         assert(typeof TextOM.Parent.prototype.removeContent === 'function');
     });
 
-    it('should throw, when not opperating on a parent', function () {
-        var root = retext.parse('A document.');
+    it('should throw when not opperating on a parent', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.removeContent.call();
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.removeContent.call();
-        }, /Type Error/);
+            assert.throws(function () {
+                tree.removeContent.call(new TextOM.TextNode('test'));
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.removeContent.call(new TextOM.TextNode('test'));
-        }, /Type Error/);
+            done(err);
+        });
     });
 
-    it('should remove all `(Paragraph|WhiteSpace)Node`s when when ' +
-        'operating on a `RootNode`', function () {
-            var root = retext.parse(
-                'A document.\n\nContaining two paragraphs.'
-            );
-            root.removeContent();
-            assert(root.toString() === '');
-            assert(root.length === 0);
-        }
-    );
+    it('should remove all `ParagraphNode`s and `WhiteSpaceNode`s when ' +
+        'operating on a `RootNode`',
+        function (done) {
+            retext.parse(
+                'A document.\n\nContaining two paragraphs.',
+                function (err, tree) {
+                    tree.removeContent();
 
-    it('should remove all `(Sentence|WhiteSpace)Node`s when operating on ' +
-        'a `ParagraphNode`', function () {
-            var paragraph = retext.parse(
-                'A document. Containing two paragraphs.\n\n' +
-                'The first paragraph contains two sentences.'
-            ).head;
+                    assert(tree.toString() === '');
+                    assert(tree.length === 0);
 
-            paragraph.removeContent();
-
-            assert(paragraph.length === 0);
-            assert(paragraph.toString() === '');
-            assert(
-                paragraph.parent.toString() ===
-                '\n\nThe first paragraph contains two sentences.'
+                    done(err);
+                }
             );
         }
     );
 
-    it('should remove one or more of `WordNode`, `PunctuationNode`, and ' +
-        '`WhiteSpaceNode`, when operating on a `SentenceNode`', function () {
-            var sentence = retext.parse(
+    it('should remove all `SentenceNode`s and `WhiteSpaceNode`s when ' +
+        'operating on a `ParagraphNode`',
+        function (done) {
+            retext.parse(
                 'A document. Containing two paragraphs.\n\n' +
-                'The first paragraph contains two sentences.'
-            ).head.head;
+                'The first paragraph contains two sentences.',
+                function (err, tree) {
+                    tree.head.removeContent();
 
-            sentence.removeContent();
-            assert(sentence.length === 0);
-            assert(sentence.toString() === '');
-            assert(
-                sentence.parent.parent.toString() ===
-                ' Containing two paragraphs.\n\n' +
-                'The first paragraph contains two sentences.'
+                    assert(tree.head.toString() === '');
+                    assert(tree.head.length === 0);
+
+                    assert(
+                        tree.toString() ===
+                        '\n\nThe first paragraph contains two sentences.'
+                    );
+
+                    done(err);
+                }
+            );
+        }
+    );
+
+    it('should remove all `WordNode`, `WhiteSpaceNode`, and ' +
+        '`PunctuationNode`s when operating on a `SentenceNode`',
+        function (done) {
+            retext.parse(
+                'A document. Containing two paragraphs.\n\n' +
+                'The first paragraph contains two sentences.',
+                function (err, tree) {
+                    tree.head.head.removeContent();
+
+                    assert(tree.head.head.toString() === '');
+                    assert(tree.head.head.length === 0);
+
+                    assert(
+                        tree.toString() ===
+                        ' Containing two paragraphs.\n\n' +
+                        'The first paragraph contains two sentences.'
+                    );
+
+                    done(err);
+                }
             );
         }
     );
 });
 
 describe('Parent#removeOuterContent()', function () {
-    it('should be of type `function`', function () {
+    it('should be a `function`', function () {
         assert(
             typeof TextOM.Element.prototype.removeOuterContent === 'function'
         );
     });
 
-    it('should throw, when not opperating on an element', function () {
-        var root = retext.parse('A document.');
+    it('should throw when not opperating on an `Element`', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.removeOuterContent.call();
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.removeOuterContent.call();
-        }, /Type Error/);
+            assert.throws(function () {
+                tree.removeOuterContent();
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.removeOuterContent();
-        }, /Type Error/);
+            assert.throws(function () {
+                tree.removeOuterContent.call(new TextOM.TextNode('test'));
+            }, /Type Error/);
 
-        assert.throws(function () {
-            root.removeOuterContent.call(new TextOM.TextNode('test'));
-        }, /Type Error/);
+            done(err);
+        });
     });
 
     it('should remove the operated on node when operating on an element',
-        function () {
-            var root;
-
-            root = retext.parse(
+        function (done) {
+            retext.parse(
                 'A document. Containing two paragraphs.\n\n' +
-                'The first paragraph contains two sentences.'
-            );
+                'The first paragraph contains two sentences.',
+                function (err, tree) {
+                    tree.head.removeOuterContent();
 
-            root.head.removeOuterContent();
+                    assert(tree.length === 2);
+                    assert(
+                        tree.toString() ===
+                        '\n\nThe first paragraph contains two sentences.'
+                    );
 
-            assert(root.length === 2);
-            assert(
-                root.toString() ===
-                '\n\nThe first paragraph contains two sentences.'
+                    done(err);
+                }
             );
         }
     );
 });
 
 describe('Parent#replaceOuterContent(value?)', function () {
-    it('should be of type `function`', function () {
+    it('should be a `function`', function () {
         assert(
             typeof TextOM.Parent.prototype.replaceOuterContent === 'function'
         );
     });
 
-    it('should NOT throw, when given an empty value', function () {
-        assert.doesNotThrow(function () {
-            retext.parse('A document.').head.replaceOuterContent('');
-        });
+    it('should NOT throw when given an empty value', function (done) {
+        retext.parse(
+            'A document.\n\nAnother document.',
+            function (err, tree) {
+                assert.doesNotThrow(function () {
+                    tree.head.replaceOuterContent('');
+                });
 
-        assert.doesNotThrow(function () {
-            retext.parse('A document.').head.replaceOuterContent();
-        });
+                assert.doesNotThrow(function () {
+                    tree.head.replaceOuterContent();
+                });
+
+                done(err);
+            }
+        );
     });
 
-    it('should throw, when not opperating on an element', function () {
-        var root = retext.parse('A document.');
-
-        assert.throws(function () {
-            root.replaceOuterContent.call();
-        }, /Type Error/);
-
-        assert.throws(function () {
-            root.replaceOuterContent();
-        }, /Type Error/);
-
-        assert.throws(function () {
-            root.replaceOuterContent.call(new TextOM.TextNode('test'));
-        }, /Type Error/);
-    });
-
-    it('should throw, when the operated on node has an unknown parent',
-        function () {
-            var node = retext.parse('document').head.head.head;
-
-            node.parent.type = 'SomeUnknownNode';
+    it('should throw when not opperating on an `Element`', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert.throws(function () {
+                tree.replaceOuterContent.call();
+            }, /Type Error/);
 
             assert.throws(function () {
-                node.replaceOuterContent();
-            }, 'context object');
+                tree.replaceOuterContent();
+            }, /Type Error/);
+
+            assert.throws(function () {
+                tree.replaceOuterContent.call(new TextOM.TextNode('test'));
+            }, /Type Error/);
+
+            done(err);
+        });
+    });
+
+    it('should throw when the operated on node has an unknown parent',
+        function (done) {
+            retext.parse('document', function (err, tree) {
+                tree.type = 'SomeUnknownNode';
+
+                assert.throws(function () {
+                    tree.head.replaceOuterContent();
+                }, /context object/);
+
+                done(err);
+            });
         }
     );
 
-    it('should return a newly initialized `Range` object', function () {
-        var paragraph = retext.parse('A document.').head;
-
-        assert(
-            paragraph.replaceOuterContent() instanceof TextOM.Range
-        );
-    });
-
-    it('should replace the operated on node with new siblings', function () {
-        var root, paragraph;
-
-        root = retext.parse(
-            'A first paragraph.\n' +
-            '\n' +
-            'A second paragraph.'
-        );
-
-        paragraph = root.tail;
-
-        paragraph.replaceOuterContent(
-            'A third paragraph.\n' +
-            '\n' +
-            'A fourth paragraph.'
-        );
-
-        assert(!paragraph.parent);
-
-        assert(
-            root.toString() ===
-            'A first paragraph.\n' +
-            '\n' +
-            'A third paragraph.\n' +
-            '\n' +
-            'A fourth paragraph.'
-        );
-    });
-
-    it('should replace return a range with its start- and set to the ' +
-        'first and last inserted nodes', function () {
-            var paragraph, range;
-
-            paragraph = retext.parse(
+    it('should replace the operated on node with new siblings',
+        function (done) {
+            retext.parse(
                 'A first paragraph.\n' +
                 '\n' +
-                'A second paragraph.'
-            ).tail;
+                'A second paragraph.',
+                function (err, tree) {
+                    var node;
 
-            range = paragraph.replaceOuterContent(
-                'A third paragraph.\n' +
+                    node = tree.tail;
+
+                    node.replaceOuterContent(
+                        'A third paragraph.\n' +
+                        '\n' +
+                        'A fourth paragraph.'
+                    );
+
+                    assert(!node.parent);
+
+                    assert(
+                        tree.toString() ===
+                        'A first paragraph.\n' +
+                        '\n' +
+                        'A third paragraph.\n' +
+                        '\n' +
+                        'A fourth paragraph.'
+                    );
+
+                    done(err);
+                }
+            );
+        }
+    );
+
+    it('should return a `Range`', function (done) {
+        retext.parse('A document.', function (err, tree) {
+            assert(
+                tree.head.replaceOuterContent('A paragraph.') instanceof
+                TextOM.Range
+            );
+
+            done(err);
+        });
+    });
+
+    it('should return a range with its start- and end set to the ' +
+        'first and last nodes',
+        function (done) {
+            retext.parse(
+                'A first paragraph.\n' +
                 '\n' +
-                'A fourth paragraph.'
-            );
+                'A second paragraph.',
+                function (err, tree) {
+                    var range;
 
-            assert(range.startContainer instanceof TextOM.ParagraphNode);
-            assert(range.endContainer instanceof TextOM.ParagraphNode);
+                    range = tree.head.replaceOuterContent(
+                        'A third paragraph.\n' +
+                        '\n' +
+                        'A fourth paragraph.'
+                    );
 
-            assert(
-                range.startContainer.toString() ===
-                'A third paragraph.'
-            );
+                    assert(
+                        range.startContainer instanceof TextOM.ParagraphNode
+                    );
 
-            assert(
-                range.endContainer.toString() ===
-                'A fourth paragraph.'
-            );
+                    assert(
+                        range.endContainer instanceof TextOM.ParagraphNode
+                    );
 
-            assert(
-                range.toString() ===
-                'A third paragraph.\n' +
-                '\n' +
-                'A fourth paragraph.'
+                    assert(
+                        range.startContainer.toString() ===
+                        'A third paragraph.'
+                    );
+
+                    assert(
+                        range.endContainer.toString() ===
+                        'A fourth paragraph.'
+                    );
+
+                    assert(
+                        range.toString() ===
+                        'A third paragraph.\n' +
+                        '\n' +
+                        'A fourth paragraph.'
+                    );
+
+                    done(err);
+                }
             );
         }
     );
