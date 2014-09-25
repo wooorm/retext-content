@@ -1,4 +1,18 @@
 
+n.n.n / 2014-09-25
+==================
+
+ * Refactor Readme.md
+ * Remove browser test
+ * Refactor API
+ * Update Installation in docs
+ * Fix property order in component.json, package.json, bower.json
+ * Update .gitignore, .npmignore
+ * Update copyright in Readme.md
+ * Remove testling
+ * Refactor spec
+ * Update retext to 0.2.0, retext-ast, retext-range
+
 0.2.1 / 2014-09-08
 ==================
 
