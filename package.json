@@ -2,15 +2,19 @@
   "name": "retext-content",
   "version": "0.2.1",
   "description": "Append, prepend, remove, and replace content into/from Retext nodes",
+  "license": "MIT",
   "keywords": [
     "retext",
     "content"
   ],
-  "author": "Titus Wormer <tituswormer@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "retext-range": "^0.1.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wooorm/retext-content.git"
+  },
+  "author": "Titus Wormer <tituswormer@gmail.com>",
   "devDependencies": {
     "eslint": "^0.8.0",
     "istanbul": "^0.3.0",
@@ -18,10 +22,6 @@
     "mocha": "^1.20.0",
     "retext": "^0.2.0-rc.2",
     "retext-ast": "^0.1.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wooorm/retext-content.git"
   },
   "scripts": {
     "test": "node_modules/.bin/_mocha --reporter spec --check-leaks -u exports spec/retext-content.spec.js",

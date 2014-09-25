@@ -1,17 +1,17 @@
 {
   "name": "retext-content",
-  "repository": "wooorm/retext-content",
-  "description": "Append, prepend, remove, and replace content into/from Retext nodes",
   "version": "0.2.1",
+  "description": "Append, prepend, remove, and replace content into/from Retext nodes",
+  "license": "MIT",
   "keywords": [
     "retext",
     "content"
   ],
   "dependencies": {
-    "wooorm/retext-range": "^0.1.0"
+    "wooorm/retext-range": "^0.1.1"
   },
+  "repository": "wooorm/retext-content",
   "scripts" : [
     "index.js"
-  ],
-  "license": "MIT"
+  ]
 }
