@@ -147,4 +147,4 @@ Replaces the node with the parsed nodes.
 
 ## License
 
-  MIT
+MIT © Titus Wormer
