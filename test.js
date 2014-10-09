@@ -11,7 +11,7 @@ var content,
  * Module dependencies.
  */
 
-content = require('..');
+content = require('./');
 retextAST = require('retext-ast');
 Retext = require('retext');
 assert = require('assert');
