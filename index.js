@@ -4,82 +4,25 @@
  * Module dependencies.
  */
 
-var retextRange;
+var retextRange,
+    toTextOM;
 
 retextRange = require('retext-range');
+toTextOM = require('nlcst-to-textom');
 
 /**
  * Constants.
  */
 
-var has,
-    slice;
+var slice;
 
 slice = Array.prototype.slice;
-has = Object.prototype.hasOwnProperty;
 
 /**
  * Define `content`.
  */
 
 function content() {}
-
-/**
- * Transform a concrete syntax tree into a tree constructed
- * from a given object model.
- *
- * @param {Object} TextOM - the object model.
- * @param {Object} cst - the concrete syntax tree to
- *   transform.
- * @return {Node} the node constructed from the
- *   CST and the object model.
- */
-
-function fromCST(TextOM, cst) {
-    var index,
-        node,
-        children,
-        data,
-        attribute;
-
-    node = new TextOM[cst.type]();
-
-    if ('children' in cst) {
-        index = -1;
-        children = cst.children;
-
-        while (children[++index]) {
-            node.append(fromCST(TextOM, children[index]));
-        }
-    } else {
-        node.fromString(cst.value);
-    }
-
-    /**
-     * Currently, `data` properties are not really
-     * specified or documented. Therefore, the following
-     * branch is ignored by Istanbul.
-     *
-     * The idea is that plugins and parsers can each
-     * attach data to nodes, in a similar fashion to the
-     * DOMs dataset, which can be stringified and parsed
-     * back and forth between the concrete syntax tree
-     * and the node.
-     */
-
-    /* istanbul ignore if: TODO, Untestable, will change soon. */
-    if ('data' in cst) {
-        data = cst.data;
-
-        for (attribute in data) {
-            if (has.call(data, attribute)) {
-                node.data[attribute] = data[attribute];
-            }
-        }
-    }
-
-    return node;
-}
 
 /**
  * Get a tokenizer for a given node.
@@ -150,7 +93,7 @@ function insert(parent, node, value) {
         );
     }
 
-    tree = fromCST(TextOM, tokenizer.call(parser, value));
+    tree = toTextOM(TextOM, tokenizer.call(parser, value));
 
     range = new TextOM.Range();
 
