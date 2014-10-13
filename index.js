@@ -25,6 +25,18 @@ slice = Array.prototype.slice;
 function content() {}
 
 /**
+ * Detect if a value loosly resembles an array-like
+ * value.
+ *
+ * @param {*} value
+ * @return {boolean}
+ */
+
+function isArrayLike(value) {
+    return typeof value === 'object' && 'length' in value;
+}
+
+/**
  * Get a tokenizer for a given node.
  *
  * @param {Object} parser
@@ -71,8 +83,8 @@ function insert(parent, node, value) {
         !parent ||
         !parent.TextOM ||
         !(
-            parent instanceof parent.TextOM.Parent ||
-            parent instanceof parent.TextOM.Element
+            parent.nodeName === parent.PARENT ||
+            parent.nodeName === parent.ELEMENT
         )
     ) {
         throw new TypeError(
@@ -132,7 +144,7 @@ function remove(nodes) {
         !('length' in nodes) ||
         !(
             'TextOM' in nodes ||
-            nodes instanceof Array
+            isArrayLike(nodes)
         )
     ) {
         throw new TypeError(
@@ -207,8 +219,8 @@ function replaceContent(value) {
         !self ||
         !self.TextOM ||
         !(
-            self instanceof self.TextOM.Parent ||
-            self instanceof self.TextOM.Element
+            self.nodeName === self.PARENT ||
+            self.nodeName === self.ELEMENT
         )
     ) {
         throw new TypeError(
@@ -252,9 +264,7 @@ function removeOuterContent() {
     if (
         !self ||
         !self.TextOM ||
-        !(
-            self instanceof self.TextOM.Element
-        )
+        self.nodeName !== self.ELEMENT
     ) {
         throw new TypeError(
             'TypeError: `' + self + '` is not a valid ' +
@@ -285,9 +295,7 @@ function replaceOuterContent(value) {
         !self ||
         !self.TextOM ||
         !self.parent ||
-        !(
-            self instanceof self.TextOM.Element
-        )
+        self.nodeName !== self.ELEMENT
     ) {
         throw new TypeError(
             'TypeError: `' + self + '` is not a valid ' +
