@@ -1,4 +1,14 @@
 
+n.n.n / 2014-10-14
+==================
+
+ * Remove retext-ast from dependencies
+ * Update retext-ast, jscs, retext-range
+ * Fix multi-frame functionality
+ * Add nlcst-to-textom as a dependency
+ * Update .gitignore, .npmignore, bower ignore
+ * Move spec to test.js
+
 0.2.2 / 2014-09-25
 ==================
 
