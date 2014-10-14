@@ -8,7 +8,7 @@
     "content"
   ],
   "dependencies": {
-    "wooorm/retext-range": "^0.1.1",
+    "wooorm/retext-range": "^0.1.2",
     "wooorm/nlcst-to-textom": "^0.0.1"
   },
   "repository": "wooorm/retext-content",

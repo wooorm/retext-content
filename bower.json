@@ -8,7 +8,7 @@
     "content"
   ],
   "dependencies": {
-    "retext-range": "^0.1.1",
+    "retext-range": "^0.1.2",
     "nlcst-to-textom": "^0.0.1"
   },
   "repository": {
