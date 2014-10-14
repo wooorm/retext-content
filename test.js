@@ -1,7 +1,6 @@
 'use strict';
 
 var content,
-    retextAST,
     Retext,
     assert,
     TextOM,
@@ -12,7 +11,6 @@ var content,
  */
 
 content = require('./');
-retextAST = require('retext-ast');
 Retext = require('retext');
 assert = require('assert');
 
@@ -21,7 +19,6 @@ assert = require('assert');
  */
 
 retext = new Retext()
-    .use(retextAST)
     .use(content);
 
 TextOM = retext.TextOM;
