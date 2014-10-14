@@ -1,5 +1,5 @@
 
-n.n.n / 2014-10-14
+0.2.3 / 2014-10-14
 ==================
 
  * Remove retext-ast from dependencies
