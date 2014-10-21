@@ -1,6 +1,6 @@
 {
   "name": "retext-content",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Append, prepend, remove, and replace content into/from Retext nodes",
   "license": "MIT",
   "keywords": [
