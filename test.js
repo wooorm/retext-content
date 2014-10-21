@@ -771,10 +771,6 @@ describe('Parent#replaceOuterContent(value?)', function () {
                     tree.head.replaceOuterContent('');
                 });
 
-                assert.doesNotThrow(function () {
-                    tree.head.replaceOuterContent();
-                });
-
                 done(err);
             }
         );
