@@ -19,12 +19,6 @@ var slice;
 slice = Array.prototype.slice;
 
 /**
- * Define `content`.
- */
-
-function content() {}
-
-/**
  * Detect if a value loosly resembles an array-like
  * value.
  *
@@ -322,7 +316,13 @@ function replaceOuterContent(value) {
     return result;
 }
 
-function attach(retext) {
+/**
+ * Define `content`.
+ *
+ * @param {Retext} retext - Instance of Retext.
+ */
+
+function content(retext) {
     var TextOM,
         elementPrototype,
         parentPrototype;
@@ -379,12 +379,6 @@ function attach(retext) {
     elementPrototype.replaceOuterContent = replaceOuterContent;
     parentPrototype.replaceOuterContent = replaceOuterContent;
 }
-
-/**
- * Expose `attach`.
- */
-
-content.attach = attach;
 
 /**
  * Expose `content`.

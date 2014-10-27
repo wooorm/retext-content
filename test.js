@@ -33,12 +33,6 @@ describe('retext-content()', function () {
     it('should be a `function`', function () {
         assert(typeof content === 'function');
     });
-});
-
-describe('retext-content.attach()', function () {
-    it('should be a `function`', function () {
-        assert(typeof content.attach === 'function');
-    });
 
     it('should attach a `prependContent` method to `TextOM.Parent#',
         function () {
