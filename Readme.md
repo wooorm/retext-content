@@ -22,61 +22,25 @@ $ bower install retext-content
 ## Usage
 
 ```js
-var Retext = require('retext'),
-    content = require('retext-content'),
-    retext;
+var Retext = require('retext');
+var content = require('retext-content');
 
-retext = new Retext().use(content);
+var retext = new Retext().use(content);
 
-retext.parse('simple sentence.', function (err, tree) {
-    /* Handle errors. */
-    if (err) {
-        throw err;
-    }
-
-    /* Prepend */
-    tree.head.head.prependContent('One ');
-    tree.toString();
-    /* 'One simple sentence.' */
-
-    /* Append */
-    tree.head.appendContent(' Two sentences.');
-    tree.toString();
-    /* 'One simple sentence. Two sentences.' */
-
-    /* Replace */
-    tree.replaceContent('One paragraph.\n\nTwo paragraphs.');
-    tree.toString();
-    /* 'One paragraph.\n\nTwo paragraphs.' */
-
-    /* Remove */
-    tree.tail.removeContent();
-    tree.toString();
-    /* 'One paragraph.\n\n' */
-
-    /* Remove outer content */
-    tree.head.removeOuterContent();
-    tree.toString();
-    /* '\n\n' */
-
-    /* Replace outer content */
-    tree.head.replaceOuterContent('One paragraph.\n\nTwo paragraphs.');
-    tree.toString();
-    /* 'One paragraph.\n\nTwo paragraphs.' */
-});
+/**
+ * See each method below.
+ */
 ```
 
 ## API
 
 Note that **retext-content** does not validate—for example when operating on a sentence—if an actual given values could contain more than one sentences. This might result in incorrect trees (such as, a word with spaces), but makes it possible to correctly classify values which parsers might classify wrongly.
 
-#### TextOM.Parent#prependContent(value)
+### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#prependContent(value)
 
 ```js
 retext.parse('simple sentence.', function (err, tree) {
-    /**
-     * Prepend into the first sentence.
-     */
+    /* Prepend into the first sentence. */
 
     tree.head.head.prependContent('A document including a ');
     tree.toString();
@@ -88,13 +52,11 @@ Inserts the parsed `value` at the beginning of the node.
 
 - `value` (Non-empty `String`): The to-parse and prepend inside content.
 
-#### TextOM.Parent#appendContent(value)
+### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#appendContent(value)
 
 ```js
 retext.parse('A document', function (err, tree) {
-    /**
-     * Append into the first sentence.
-     */
+    /* Append into the first sentence. */
 
     tree.head.head.appendContent(' including a simple sentence.');
     tree.toString();
@@ -106,13 +68,11 @@ Inserts the parsed `value` at the end of the node.
 
 - `value` (Non-empty `String`): The to-parse and append inside content.
 
-#### TextOM.Parent#removeContent()
+### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeContent()
 
 ```js
 retext.parse('A sentence. Another sentence.', function (err, tree) {
-    /**
-     * Remove the content of the first sentence.
-     */
+    /* Remove the content of the first sentence. */
 
     tree.head.head.removeContent();
     tree.toString();
@@ -122,13 +82,11 @@ retext.parse('A sentence. Another sentence.', function (err, tree) {
 
 Removes all children of the node.
 
-#### TextOM.Parent#replaceContent(value?)
+### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceContent(value?)
 
 ```js
 retext.parse('A sentence. Another sentence.', function (err, tree) {
-    /**
-     * Replace the content of the first paragraph.
-     */
+    /* Replace the content of the first paragraph. */
 
     tree.head.replaceContent('One sentence. Two sentences.');
     tree.toString();
@@ -140,13 +98,11 @@ Removes all children of the node, inserts the parsed nodes.
 
 - `value` (`String`): The to-parse and insert inside content.
 
-#### TextOM.Parent#removeOuterContent()
+### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeOuterContent()
 
 ```js
 retext.parse('A sentence. Another sentence.', function (err, tree) {
-    /**
-     * Remove the first sentence.
-     */
+    /* Remove the first sentence. */
 
     tree.head.head.removeOuterContent();
     tree.toString();
@@ -157,13 +113,11 @@ retext.parse('A sentence. Another sentence.', function (err, tree) {
 Removes the node.
 This is exactly the same as `node.remove()`.
 
-#### TextOM.Parent#replaceOuterContent(value?)
+### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceOuterContent(value?)
 
 ```js
 retext.parse('A sentence.', function (err, tree) {
-    /**
-     * Replace the first sentence with two sentences.
-     */
+    /* Replace the first sentence with two sentences. */
 
     tree.head.head.replaceOuterContent('One sentence.\n\nTwo sentences.');
     tree.toString();
