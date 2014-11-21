@@ -1,4 +1,14 @@
 
+n.n.n / 2014-11-21
+==================
+
+ * Refactor `Readme.md`
+ * Add flat badges to `Readme.md`
+ * Fix incorrect executive rights on `test.js`
+ * Refactor npm script targets in `package.json`
+ * Add missing `.eslintrc` file
+ * Update retext, retext-range, nlcst-to-textom, retext-inspect
+
 0.2.5 / 2014-10-27
 ==================
 
