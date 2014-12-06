@@ -132,20 +132,20 @@ Replace `parent` with the parsed `value`.
 
 ```
            TextOM.Range#prependContent()
-  156 op/s » Prepend a paragraph before an ever growing section
-  161 op/s » Prepend a paragraph before an ever growing article
+  168 op/s » Prepend a paragraph before an ever growing section
+  163 op/s » Prepend a paragraph before an ever growing article
 
            TextOM.Range#appendContent()
-  160 op/s » Append a paragraph after an ever growing section
-  160 op/s » Append a paragraph after an ever growing article
+  171 op/s » Append a paragraph after an ever growing section
+  178 op/s » Append a paragraph after an ever growing article
 
            TextOM.Range#replaceContent()
-  160 op/s » Replace a paragraph in a section
-  162 op/s » Replace a paragraph in an article
+  175 op/s » Replace a paragraph in a section
+  175 op/s » Replace a paragraph in an article
 
            TextOM.Range#replaceOuterContent()
-  164 op/s » Replace a paragraph with another paragraph in a section
-  165 op/s » Replace a paragraph with another paragraph in an article
+  171 op/s » Replace a paragraph with another paragraph in a section
+  174 op/s » Replace a paragraph with another paragraph in an article
 ```
 
 ## License

@@ -113,12 +113,23 @@ function insert(parent, node, value) {
     range.setStart(tree.head);
     range.setEnd(tree.tail || tree.head);
 
-    index = tree.length;
+    tree = slice.call(tree);
 
-    while (tree[--index]) {
-        (node ? node.after : parent.prepend).call(
-            node || parent, tree[index]
-        );
+    /**
+     * Speed up the node removal by making TextOM
+     * think all nodes are detached.
+     */
+
+    index = -1;
+
+    while (tree[++index]) {
+        tree[index].parent = null;
+    }
+
+    if (node) {
+        node.afterAll(tree);
+    } else {
+        parent.prependAll(tree);
     }
 
     return range;
