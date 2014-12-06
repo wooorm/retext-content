@@ -1,6 +1,6 @@
 # retext-content [![Build Status](https://img.shields.io/travis/wooorm/retext-content.svg?style=flat)](https://travis-ci.org/wooorm/retext-content) [![Coverage Status](https://img.shields.io/coveralls/wooorm/retext-content.svg?style=flat)](https://coveralls.io/r/wooorm/retext-content?branch=master)
 
-Append, prepend, remove, and replace content into/from  **[retext](https://github.com/wooorm/retext "Retext")** nodes.
+Append, prepend, remove, and replace content into/from  **[retext](https://github.com/wooorm/retext)** nodes.
 
 ## Installation
 
@@ -34,7 +34,7 @@ var retext = new Retext().use(content);
 
 ## API
 
-Note that **retext-content** does not validate—for example when operating on a sentence—if an actual given values could contain more than one sentences. This might result in incorrect trees (such as, a word with spaces), but makes it possible to correctly classify values which parsers might classify wrongly.
+Note that **retext-content** does not validate—for example when operating on a sentence—if a given value could contain multiple sentences. This might result in incorrect trees (such as, a word with spaces), but makes it possible to correctly classify values which parsers might classify wrongly.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#prependContent(value)
 
@@ -48,9 +48,9 @@ retext.parse('simple sentence.', function (err, tree) {
 });
 ```
 
-Inserts the parsed `value` at the beginning of the node.
+Insert the parsed `value` at the beginning of `parent`.
 
-- `value` (Non-empty `String`): The to-parse and prepend inside content.
+- `value` (Non-empty `string`): The to-parse and prepend inside content.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#appendContent(value)
 
@@ -64,9 +64,9 @@ retext.parse('A document', function (err, tree) {
 });
 ```
 
-Inserts the parsed `value` at the end of the node.
+Insert the parsed `value` at the end of `parent`.
 
-- `value` (Non-empty `String`): The to-parse and append inside content.
+- `value` (Non-empty `string`): The to-parse and append inside content.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeContent()
 
@@ -80,7 +80,7 @@ retext.parse('A sentence. Another sentence.', function (err, tree) {
 });
 ```
 
-Removes all children of the node.
+Remove all children of `parent`.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceContent(value?)
 
@@ -94,9 +94,9 @@ retext.parse('A sentence. Another sentence.', function (err, tree) {
 });
 ```
 
-Removes all children of the node, inserts the parsed nodes.
+Remove all children of `parent`. Insert the parsed `value`.
 
-- `value` (`String`): The to-parse and insert inside content.
+- `value` (`string`, `null`): The to-parse and insert inside content.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeOuterContent()
 
@@ -110,8 +110,7 @@ retext.parse('A sentence. Another sentence.', function (err, tree) {
 });
 ```
 
-Removes the node.
-This is exactly the same as `node.remove()`.
+Remove `parent`. This is exactly the same as `node.remove()`.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceOuterContent(value?)
 
@@ -125,9 +124,9 @@ retext.parse('A sentence.', function (err, tree) {
 });
 ```
 
-Replaces the node with the parsed nodes.
+Replace `parent` with the parsed `value`.
 
-- `value` (`String`): The to-parse and replace-with content.
+- `value` (`string`, optional): The to-parse and replace-with content.
 
 ## License
 
