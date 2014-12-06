@@ -128,6 +128,26 @@ Replace `parent` with the parsed `value`.
 
 - `value` (`string`, optional): The to-parse and replace-with content.
 
+## Performance
+
+```
+           TextOM.Range#prependContent()
+  156 op/s » Prepend a paragraph before an ever growing section
+  161 op/s » Prepend a paragraph before an ever growing article
+
+           TextOM.Range#appendContent()
+  160 op/s » Append a paragraph after an ever growing section
+  160 op/s » Append a paragraph after an ever growing article
+
+           TextOM.Range#replaceContent()
+  160 op/s » Replace a paragraph in a section
+  162 op/s » Replace a paragraph in an article
+
+           TextOM.Range#replaceOuterContent()
+  164 op/s » Replace a paragraph with another paragraph in a section
+  165 op/s » Replace a paragraph with another paragraph in an article
+```
+
 ## License
 
 MIT © [Titus Wormer](http://wooorm.com)
