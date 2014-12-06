@@ -1,5 +1,5 @@
 
-n.n.n / 2014-12-06
+0.2.7 / 2014-12-06
 ==================
 
  * Refactor to improve performance by using new textom-methods
