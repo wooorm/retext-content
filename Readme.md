@@ -22,6 +22,12 @@ $ component install wooorm/retext-content
 $ bower install retext-content
 ```
 
+[Duo](http://duojs.org/#getting-started):
+
+```javascript
+var content = require('wooorm/retext-content');
+```
+
 ## Usage
 
 ```javascript
