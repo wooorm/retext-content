@@ -30,16 +30,14 @@ var content = require('retext-content');
 
 var retext = new Retext().use(content);
 
-/**
- * See each method below.
- */
+/* See each method below. */
 ```
 
 ## API
 
 Note that **retext-content** does not validate—for example when operating on a sentence—if a given value could contain multiple sentences. This might result in incorrect trees (such as, a word with spaces), but makes it possible to correctly classify values which parsers might classify wrongly.
 
-### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#prependContent(value)
+### [Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#prependContent(value)
 
 ```javascript
 retext.parse('simple sentence.', function (err, tree) {
@@ -55,7 +53,7 @@ Insert the parsed `value` at the beginning of `parent`.
 
 - `value` (Non-empty `string`): The to-parse and prepend inside content.
 
-### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#appendContent(value)
+### [Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#appendContent(value)
 
 ```javascript
 retext.parse('A document', function (err, tree) {
@@ -71,7 +69,7 @@ Insert the parsed `value` at the end of `parent`.
 
 - `value` (Non-empty `string`): The to-parse and append inside content.
 
-### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeContent()
+### [Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeContent()
 
 ```javascript
 retext.parse('A sentence. Another sentence.', function (err, tree) {
@@ -85,7 +83,7 @@ retext.parse('A sentence. Another sentence.', function (err, tree) {
 
 Remove all children of `parent`.
 
-### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceContent(value?)
+### [Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceContent(value?)
 
 ```javascript
 retext.parse('A sentence. Another sentence.', function (err, tree) {
@@ -101,7 +99,7 @@ Remove all children of `parent`. Insert the parsed `value`.
 
 - `value` (`string`, `null`): The to-parse and insert inside content.
 
-### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeOuterContent()
+### [Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeOuterContent()
 
 ```javascript
 retext.parse('A sentence. Another sentence.', function (err, tree) {
@@ -115,7 +113,7 @@ retext.parse('A sentence. Another sentence.', function (err, tree) {
 
 Remove `parent`. This is exactly the same as `node.remove()`.
 
-### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceOuterContent(value?)
+### [Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceOuterContent(value?)
 
 ```javascript
 retext.parse('A sentence.', function (err, tree) {
