@@ -5,23 +5,26 @@ Append, prepend, remove, and replace content into/from  **[retext](https://githu
 ## Installation
 
 npm:
-```sh
+
+```bash
 $ npm install retext-content
 ```
 
 Component:
-```sh
+
+```bash
 $ component install wooorm/retext-content
 ```
 
 Bower:
-```sh
+
+```bash
 $ bower install retext-content
 ```
 
 ## Usage
 
-```js
+```javascript
 var Retext = require('retext');
 var content = require('retext-content');
 
@@ -38,7 +41,7 @@ Note that **retext-content** does not validate—for example when operating on a
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#prependContent(value)
 
-```js
+```javascript
 retext.parse('simple sentence.', function (err, tree) {
     /* Prepend into the first sentence. */
 
@@ -54,7 +57,7 @@ Insert the parsed `value` at the beginning of `parent`.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#appendContent(value)
 
-```js
+```javascript
 retext.parse('A document', function (err, tree) {
     /* Append into the first sentence. */
 
@@ -70,7 +73,7 @@ Insert the parsed `value` at the end of `parent`.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeContent()
 
-```js
+```javascript
 retext.parse('A sentence. Another sentence.', function (err, tree) {
     /* Remove the content of the first sentence. */
 
@@ -84,7 +87,7 @@ Remove all children of `parent`.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceContent(value?)
 
-```js
+```javascript
 retext.parse('A sentence. Another sentence.', function (err, tree) {
     /* Replace the content of the first paragraph. */
 
@@ -100,7 +103,7 @@ Remove all children of `parent`. Insert the parsed `value`.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#removeOuterContent()
 
-```js
+```javascript
 retext.parse('A sentence. Another sentence.', function (err, tree) {
     /* Remove the first sentence. */
 
@@ -114,7 +117,7 @@ Remove `parent`. This is exactly the same as `node.remove()`.
 
 ### [TextOM.Parent](https://github.com/wooorm/textom#textomparent-nlcstparent)#replaceOuterContent(value?)
 
-```js
+```javascript
 retext.parse('A sentence.', function (err, tree) {
     /* Replace the first sentence with two sentences. */
 
@@ -130,7 +133,7 @@ Replace `parent` with the parsed `value`.
 
 ## Performance
 
-```
+```text
            TextOM.Parent#prependContent()
   168 op/s » Prepend a paragraph before an ever growing section
   163 op/s » Prepend a paragraph before an ever growing article
