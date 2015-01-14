@@ -1,6 +1,6 @@
 'use strict';
 
-/**
+/*
  * Module dependencies.
  */
 
@@ -10,7 +10,7 @@ var retextRange,
 retextRange = require('retext-range');
 toTextOM = require('nlcst-to-textom');
 
-/**
+/*
  * Constants.
  */
 
@@ -25,7 +25,6 @@ slice = Array.prototype.slice;
  * @param {*} value
  * @return {boolean}
  */
-
 function isArrayLike(value) {
     return typeof value === 'object' && 'length' in value;
 }
@@ -37,7 +36,6 @@ function isArrayLike(value) {
  * @param {Node} node
  * @return {Function?}
  */
-
 function getTokenizer(parser, node) {
     var type;
 
@@ -64,7 +62,6 @@ function getTokenizer(parser, node) {
  *   to the first inserted node and `endContainer` to
  *   the last inserted node.
  */
-
 function insert(parent, node, value) {
     var TextOM,
         parser,
@@ -115,7 +112,7 @@ function insert(parent, node, value) {
 
     tree = slice.call(tree);
 
-    /**
+    /*
      * Speed up the node removal by making TextOM
      * think all nodes are detached.
      */
@@ -140,7 +137,6 @@ function insert(parent, node, value) {
  *
  * @param {Parent|Array.<Child>} nodes
  */
-
 function remove(nodes) {
     var index;
 
@@ -173,9 +169,8 @@ function remove(nodes) {
  * @return {Range} - Range with its `startContainer` set
  *   to the first inserted node and `endContainer` to
  *   the last inserted node.
- * @this Parent
+ * @this {Parent}
  */
-
 function prependContent(value) {
     return insert(this, null, value);
 }
@@ -187,9 +182,8 @@ function prependContent(value) {
  * @return {Range} - Range with its `startContainer` set
  *   to the first inserted node and `endContainer` to
  *   the last inserted node.
- * @this Parent
+ * @this {Parent}
  */
-
 function appendContent(value) {
     return insert(this, this && (this.tail || this.head), value);
 }
@@ -197,9 +191,8 @@ function appendContent(value) {
 /**
  * Removes the content of the operated on parent.
  *
- * @this Parent
+ * @this {Parent}
  */
-
 function removeContent() {
     remove(this);
 }
@@ -236,7 +229,7 @@ function replaceContent(value) {
 
     nodes = slice.call(self);
 
-    /**
+    /*
      * Do not throw on empty `value`.
      */
 
@@ -258,9 +251,8 @@ function replaceContent(value) {
 /**
  * Removes the operated on element (both parent and child).
  *
- * @this Element
+ * @this {Element}
  */
-
 function removeOuterContent() {
     var self;
 
@@ -287,9 +279,8 @@ function removeOuterContent() {
  * @return {Range} - Range with its `startContainer` set
  *   to the first inserted node and `endContainer` to
  *   the last inserted node.
- * @this Element
+ * @this {Element}
  */
-
 function replaceOuterContent(value) {
     var self,
         result;
@@ -308,7 +299,7 @@ function replaceOuterContent(value) {
         );
     }
 
-    /**
+    /*
      * Do not throw on empty `value`.
      */
 
@@ -332,7 +323,6 @@ function replaceOuterContent(value) {
  *
  * @param {Retext} retext - Instance of Retext.
  */
-
 function content(retext) {
     var TextOM,
         elementPrototype,
@@ -342,48 +332,48 @@ function content(retext) {
     elementPrototype = TextOM.Element.prototype;
     parentPrototype = TextOM.Parent.prototype;
 
-    /**
+    /*
      * Depend on `retext-range`.
      */
 
     retext.use(retextRange);
 
-    /**
+    /*
      * Expose `prependContent` on Parent.
      */
 
     elementPrototype.prependContent = prependContent;
     parentPrototype.prependContent = prependContent;
 
-    /**
+    /*
      * Expose `appendContent` on Parent.
      */
 
     elementPrototype.appendContent = appendContent;
     parentPrototype.appendContent = appendContent;
 
-    /**
+    /*
      * Expose `removeContent` on Parent.
      */
 
     elementPrototype.removeContent = removeContent;
     parentPrototype.removeContent = removeContent;
 
-    /**
+    /*
      * Expose `replaceContent` on Parent.
      */
 
     elementPrototype.replaceContent = replaceContent;
     parentPrototype.replaceContent = replaceContent;
 
-    /**
+    /*
      * Expose `removeOuterContent` on (Parent and) Element.
      */
 
     elementPrototype.removeOuterContent = removeOuterContent;
     parentPrototype.removeOuterContent = removeOuterContent;
 
-    /**
+    /*
      * Expose `replaceOuterContent` on (Parent and) Element.
      */
 
@@ -391,7 +381,7 @@ function content(retext) {
     parentPrototype.replaceOuterContent = replaceOuterContent;
 }
 
-/**
+/*
  * Expose `content`.
  */
 

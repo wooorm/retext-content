@@ -1,6 +1,6 @@
 'use strict';
 
-/**
+/*
  * Module dependencies.
  */
 
@@ -14,7 +14,7 @@ inspect = require('retext-inspect');
 Retext = require('retext');
 assert = require('assert');
 
-/**
+/*
  * Retext.
  */
 
@@ -25,7 +25,7 @@ retext = new Retext().use(content).use(inspect);
 
 TextOM = retext.TextOM;
 
-/**
+/*
  * Tests.
  */
 

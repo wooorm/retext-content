@@ -3,14 +3,14 @@
 var Retext,
     retextContent;
 
-/**
+/*
  * Dependencies.
  */
 
 Retext = require('retext');
 retextContent = require('./');
 
-/**
+/*
  * Dependencies.
  */
 
@@ -18,7 +18,7 @@ var retext;
 
 retext = new Retext().use(retextContent);
 
-/**
+/*
  * Test data: A (big?) article (w/ 100 paragraphs, 500
  * sentences, 10,000 words);
  *
@@ -53,6 +53,11 @@ section = paragraph + Array(10).join(enters + paragraph);
 
 article = section + Array(10).join(enters + section);
 
+/**
+ * Construct a section.
+ *
+ * @param {function (Error?)} done
+ */
 function createSection(done) {
     retext.parse(section, function (err, tree) {
         sectionNode = tree;
@@ -61,6 +66,11 @@ function createSection(done) {
     });
 }
 
+/**
+ * Construct an article.
+ *
+ * @param {function (Error?)} done
+ */
 function createArticle(done) {
     retext.parse(article, function (err, tree) {
         articleNode = tree;
