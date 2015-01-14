@@ -69,7 +69,7 @@ function createArticle(done) {
     });
 }
 
-suite('TextOM.Range#prependContent()', function () {
+suite('TextOM.Parent#prependContent()', function () {
     before(createSection);
     before(createArticle);
 
@@ -82,7 +82,7 @@ suite('TextOM.Range#prependContent()', function () {
     });
 });
 
-suite('TextOM.Range#appendContent()', function () {
+suite('TextOM.Parent#appendContent()', function () {
     before(createSection);
     before(createArticle);
 
@@ -95,7 +95,7 @@ suite('TextOM.Range#appendContent()', function () {
     });
 });
 
-suite('TextOM.Range#replaceContent()', function () {
+suite('TextOM.Parent#replaceContent()', function () {
     before(createSection);
     before(createArticle);
 
@@ -108,7 +108,7 @@ suite('TextOM.Range#replaceContent()', function () {
     });
 });
 
-suite('TextOM.Range#replaceOuterContent()', function () {
+suite('TextOM.Parent#replaceOuterContent()', function () {
     before(createSection);
     before(createArticle);
 
